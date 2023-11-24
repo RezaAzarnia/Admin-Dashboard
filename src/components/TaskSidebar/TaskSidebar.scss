@@ -1,0 +1,75 @@
+.right-sidebar {
+    position: fixed;
+    top: 69px;
+    right: -280px;
+    width: 275px;
+    height: 100vh;
+    background-color: var(--white);
+    padding: 10px 0;
+  transition: all 0.5s ease-in-out;
+    .sidebar-menu > ul {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      li {
+        text-transform: capitalize;
+        font-size: 0.8rem;
+        color: var(--dark-gray);
+      }
+    }
+  }
+  .right-sidebar.active{
+    right: 0;
+  }
+  .search-bar {
+    .input-group {
+      width: calc(100% - 10px);
+      margin: 0 auto;
+    }
+  }
+  .right-sidebar-title {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
+    margin: 20px 0;
+    h4 {
+      text-transform: capitalize;
+    }
+  }
+  .right-sidebar-body {
+    li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      justify-content: center;
+      border-bottom: 1px solid #b5b5b5;
+      padding: 10px 0;
+      &:last-child{
+        border-bottom: none;
+      }
+      img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+      }
+      .chat-info {
+        width: 75%;
+        p {
+          text-transform: capitalize;
+          font-size: 0.9rem;
+          margin-bottom: 5px;
+        }
+        span {
+          color: var(--gray);
+          font-size: 0.75rem;
+          display: inline-block;
+          width: 100%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          padding: 3px 0;
+        }
+      }
+    }
+  }

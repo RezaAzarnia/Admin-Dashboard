@@ -1,0 +1,35 @@
+.browser-usage-stats {
+  grid-row: 2/3;
+  background: var(--white);
+  padding: 20px;
+  .stats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+.browsers-stats {
+  margin-top: 10px + 10;
+  .browsers-list > .browser-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--light-gray);
+    text-transform: capitalize;
+    font-size: 0.9rem;
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
+}
+.browser-usage-pill-badget {
+  background-color: var(--danger);
+  border-radius: 30px;
+  color: var(--white);
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 5px;
+}

@@ -1,0 +1,37 @@
+.table,
+td,
+th {
+  padding: 15px !important;
+  text-align: left;
+  font-size: 15px;
+}
+tr {
+  border-bottom: 1px solid #ddd !important;
+}
+th {
+  text-transform: capitalize;
+  font-size: 12px;
+  color: var(--gray);
+}
+table {
+  .edit-btn {
+    padding: 5px 15px;
+    cursor: pointer;
+    border: none;
+    text-transform: capitalize;
+    font-size: 0.85rem;
+    background: var(--green);
+    color: var(--white);
+    border-radius: 5px;
+  }
+  .delete-btn {
+    padding: 5px 15px;
+    cursor: pointer;
+    border: none;
+    text-transform: capitalize;
+    font-size: 0.85rem;
+    background: var(--danger);
+    color: var(--white);
+    border-radius: 5px;
+  }
+}

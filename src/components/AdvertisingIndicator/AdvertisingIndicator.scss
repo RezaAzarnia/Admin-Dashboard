@@ -1,0 +1,33 @@
+.Advertise-box {
+  grid-column: 5/7;
+  background-color: var(--white);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  .advertise-chart {
+    background-color: var(--warning);
+    width: 100%;
+    height: 70%;
+  }
+}
+.Advertise-box {
+  .chart-info-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+}
+.advertise-chart-info {
+  text-transform: capitalize;
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: -12px;
+    width: 10px;
+    height: 10px;
+    background-color: var(--green);
+  }
+}

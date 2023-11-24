@@ -1,0 +1,43 @@
+html {
+  box-sizing: border-box;
+}
+*,
+*::after,
+*::before {
+  outline: none;
+  box-sizing: inherit;
+}
+body {
+  font-family: var(--primary-font);
+  background-color: var(--body-color);
+}
+
+h1 {
+  font-size: 2em;
+}
+h2 {
+  font-size: 1.5em;
+}
+h3 {
+  font-size: 1.17em;
+}
+h4 {
+  font-size: 1em;
+}
+h5 {
+  font-size: 0.83em;
+}
+h6 {
+  font-size: 0.67em;
+}
+
+.icon {
+  font-size: 1.2rem;
+  color: var(--gray);
+  transition: all 0.5s ease;
+  cursor: pointer;
+  &:hover,
+  &:focus {
+    color: var(--balck);
+  }
+}

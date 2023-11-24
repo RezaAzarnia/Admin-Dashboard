@@ -1,0 +1,24 @@
+.detail-box-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 100px;
+  justify-items: center;
+  gap: 10px;
+}
+.Analytics-part {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 220px);
+  margin: 25px 0;
+  gap: 15px;
+}
+.down-part-container {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: max-content;
+  gap: 10px;
+  table{
+    grid-column: 1 / span 4;
+    background: var(--white);
+  }
+}

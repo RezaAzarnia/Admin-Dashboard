@@ -1,0 +1,110 @@
+.navbar {
+  position: fixed;
+  width: 100%;
+  padding: 10px 15px;
+  background-color: var(--white);
+  box-shadow: 0px 0px 4px 0px var(--balck);
+  display: grid;
+  grid-template-columns: 16% 24% 60%;
+  .navbar-left-side {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .hamburger-icon {
+      color: rgb(33 33 33 / 60%);
+      font-size: 1.3rem;
+      cursor: pointer;
+    }
+  }
+}
+//wiil add when the nav bar scroll
+.navbar.active {
+  box-shadow: 0px 2px 6px 0px #a2a2a2;
+}
+
+.navbar-left-side {
+  .logo-img {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .brand-text {
+    display: inline-block;
+    vertical-align: middle;
+    text-transform: capitalize;
+    margin-left: 8px;
+  }
+}
+// will change to an other component
+.input-group {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+  width: 100%;
+  position: relative;
+  .search-input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 30px;
+    border: 1px solid #7d7c7c38;
+    outline: none;
+    transition: all 0.5s ease;
+  }
+  .search-icon {
+    color: var(--dark-gray);
+    text-align: center;
+    position: absolute;
+    right: 9px;
+  }
+}
+.search-input {
+  &::placeholder {
+    text-transform: capitalize;
+  }
+  &:focus {
+    border: 1px solid var(--dark-gray);
+  }
+}
+//////////////////////////////////////
+
+.navbar-right-side {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  gap: 6px;
+  .profile-image {
+    position: relative;
+    width: 45px;
+    height: 45px;
+    margin-left: 8px;
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+  }
+}
+
+.notification-icon-container {
+  position: relative;
+  .notification-count {
+    position: absolute;
+    top: -7px;
+    right: -4px;
+    width: 15px;
+    height: 15px;
+    background-color: var(--green);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 0.65rem;
+  }
+}
+.navbar-right-side .settings-icon {
+  margin-right: 5px;
+}
+.navbar-right-side .icon-menu-container {
+  position: relative;
+}
