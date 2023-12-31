@@ -1,0 +1,24 @@
+.section-header-bread-crump {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .header-title > h3 {
+    text-transform: capitalize;
+  }
+}
+
+.breadCrump-list {
+  display: flex;
+  gap: 5px;
+  li.breadCrump-item {
+    text-transform: capitalize;
+    font-size: 0.875rem;
+    a {
+      text-decoration: none;
+      color: var(--dark-gray);
+    }
+  }
+  .breadCrump-item.active {
+    color: var(--black);
+  }
+}

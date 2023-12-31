@@ -1,32 +1,33 @@
 import React from 'react'
+import BoxTopbar from '../BoxTopbar/BoxTopbar'
+import { MdFileDownload } from "react-icons/md";
+import { IoCloseOutline } from "react-icons/io5";
 import './BrowserUsageStats.scss'
+
 export default function BrowserUsageStats() {
     return (
         <div className="browser-usage-stats">
-            <div className="stats-header">
-                <h3>Broswer Stats</h3>
-                <div className="download-side">
-                    <i className="fa fa-arrow-down" aria-hidden="true"></i>
-                    <i className="fa fa-close"></i>
-                </div>
-            </div>
+            <BoxTopbar title='bowser stats'>
+                <MdFileDownload className='icon' />
+                <IoCloseOutline className='icon' />
+            </BoxTopbar>
             <div className="browsers-stats">
                 <ul className='browsers-list'>
                     <li className='browser-list-item'>
                         chrome
-                        <span className="browser-usage-pill-badget">10%</span>
+                        <span className="badge bg-success">50%</span>
                     </li>
                     <li className='browser-list-item'>
-                        chrome
-                        <span className="browser-usage-pill-badget">10%</span>
+                        FireFox Mozilla
+                        <span className="badge bg-warning">25%</span>
                     </li>
                     <li className='browser-list-item'>
-                        chrome
-                        <span className="browser-usage-pill-badget">10%</span>
+                        Opera
+                        <span className="badge bg-danger">20%</span>
                     </li>
                     <li className='browser-list-item'>
-                        chrome
-                        <span className="browser-usage-pill-badget">10%</span>
+                        Edge
+                        <span className="badge bg-danger">5%</span>
                     </li>
                 </ul>
             </div>

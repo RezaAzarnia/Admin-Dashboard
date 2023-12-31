@@ -1,0 +1,21 @@
+.comments-container {
+  background-color: var(--white);
+  padding: 15px;
+  margin: 30px 0;
+  td.hasAnwser {
+    background: var(--green);
+    text-align: center;
+    color: #fff;
+    font-size: 1.2rem;
+  }
+  td.hasNoAnwser {
+    background: var(--danger);
+    text-align: center;
+    color: #fff;
+    font-size: 1.2rem;
+  }
+}
+
+.comment-anwser-textarea {
+  height: 100px;
+}

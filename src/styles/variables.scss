@@ -1,16 +1,27 @@
 :root {
   --primary-font: "Poppins";
   --green: #2ecd99;
-  --danger: #ed6f56;
-  --warning: #f0c541;
-  --primary: #4e9de6;
-  --pink: rgba(255, 105, 180, 0.68);
-  --dark-blue: #2a3e4c;
-  --gray: #7d7c7c;
-  --light-gray: #7d7c7c81;
-  --dark-gray: #777;
+  --danger: #d32f2f;
+  --warning: #f6dc8d;
 
+  --primary: #95c4f0;
+  --blue: #007bff;
+
+  --pink: rgba(255, 105, 180, 0.68);
+  --gray: #bbb;
+  --purple: #9c27b0;
   --body-color: #edf1f5;
   --white: #fff;
   --black: #212121;
+
+  --light-gray: #ddd;
+
+  --dark-blue: #2a3e4c;
+  --dark-green: #1b4242;
+  --dark-gray: #777;
+  --dark-warning: #ffa500;
+
+  --green-hover: #26a073;
+  --danger-hover: #f44336;
+  --warning-hover: #f6b64b;
 }

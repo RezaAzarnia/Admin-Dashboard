@@ -1,75 +1,151 @@
-.right-sidebar {
-    position: fixed;
-    top: 69px;
-    right: -280px;
-    width: 275px;
-    height: 100vh;
-    background-color: var(--white);
-    padding: 10px 0;
+.task-sidebar {
+  position: fixed;
+  top: 65px;
+  right: -280px;
+  width: 275px;
+  height: 91vh;
+  background-color: var(--white);
+  padding: 10px 0;
+  z-index: 999;
   transition: all 0.5s ease-in-out;
-    .sidebar-menu > ul {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      li {
-        text-transform: capitalize;
-        font-size: 0.8rem;
-        color: var(--dark-gray);
-      }
-    }
+  overflow: auto;
+  .task-sidebar-menu {
+    border-bottom: 1px solid var(--light-gray);
   }
-  .right-sidebar.active{
-    right: 0;
+}
+.task-sidebar-menu-list {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  .task-sidebar-menu-list-item {
+    text-transform: capitalize;
+    font-size: 0.8rem;
+    color: var(--gray);
+    cursor: pointer;
+    padding: 8px;
+    width: 50%;
+    text-align: center;
   }
-  .search-bar {
-    .input-group {
-      width: calc(100% - 10px);
-      margin: 0 auto;
-    }
+  .task-sidebar-menu-list-item.active {
+    color: var(--black);
   }
-  .right-sidebar-title {
+}
+.task-sidebar.active {
+  right: 0;
+}
+.task-sidebar-body .taskSidebar-header {
+  border-bottom: 1px solid var(--light-gray);
+  .row {
     display: flex;
     justify-content: space-between;
-    padding: 0 10px;
-    margin: 20px 0;
-    h4 {
+    align-items: center;
+    padding: 15px 8px;
+    h4.task-header-title {
       text-transform: capitalize;
     }
+    svg {
+      cursor: pointer;
+    }
   }
-  .right-sidebar-body {
-    li {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      width: 100%;
-      justify-content: center;
-      border-bottom: 1px solid #b5b5b5;
-      padding: 10px 0;
-      &:last-child{
-        border-bottom: none;
+}
+.chat-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  justify-content: center;
+  border-bottom: 1px solid #b5b5b5;
+  padding: 10px 0;
+  &:last-child {
+    border-bottom: none;
+  }
+  img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+}
+.chat-info {
+  width: 75%;
+  .user-name {
+    text-transform: capitalize;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+  }
+  .chat-text {
+    color: var(--gray);
+    font-size: 0.75rem;
+    display: inline-block;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 3px 0;
+  }
+}
+.todo-list {
+  .todo-list-item {
+    width: 100%;
+    border-bottom: 1px solid var(--light-gray);
+    .todo {
+      display: block;
+      width: 95%;
+      padding: 13px 7px 8px;
+      font-size: 0.8rem;
+      text-transform: capitalize;
+      text-align: justify;
+      user-select: none;
+      label {
+        cursor: pointer;
       }
-      img {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
+      label.diactive {
+        text-decoration: line-through;
+        color: var(--dark-gray);
       }
-      .chat-info {
-        width: 75%;
-        p {
-          text-transform: capitalize;
-          font-size: 0.9rem;
-          margin-bottom: 5px;
-        }
-        span {
-          color: var(--gray);
-          font-size: 0.75rem;
-          display: inline-block;
-          width: 100%;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          padding: 3px 0;
-        }
+      input {
+        margin-right: 5px + 3;
       }
     }
   }
+}
+.todo-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-right: 5px;
+  .todo-created-time {
+    display: block;
+    margin-top: 5px;
+    color: var(--gray);
+    font-size: 0.8rem;
+  }
+  .trash-icon {
+    color: var(--danger);
+    cursor: pointer;
+  }
+}
+.taskSidebar-header {
+  position: relative;
+  form {
+    position: relative;
+    display: none;
+    width: 97%;
+    margin: 0 auto;
+    user-select: none;
+    .add-todo-btn {
+      position: absolute;
+      top: 9px;
+      right: 3px;
+    }
+  }
+}
+form.active {
+  display: block;
+}
+form .todo-error-message {
+  display: block;
+  color: var(--danger);
+  font-size: 0.8rem;
+  text-transform: capitalize;
+  margin-bottom: 5px;
+}

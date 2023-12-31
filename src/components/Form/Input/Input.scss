@@ -1,0 +1,51 @@
+.input-group {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  label {
+    text-transform: capitalize;
+    font-size: 0.875rem;
+  }
+  .input,
+  select {
+    margin: 5px 0;
+    width: 100%;
+    padding: 10px 5px;
+    border: 1px solid var(--gray);
+    outline: none;
+    border-radius: 2px;
+    &:focus{
+      box-shadow: 0 0 0 0 red;
+    }
+  }
+  input::placeholder {
+    text-transform: capitalize;
+  }
+  
+}
+textarea {
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--gray);
+  line-height: 1.5;
+}
+select {
+  cursor: pointer;
+  font-size: 1rem;
+  //   color: var(--gray);
+}
+.error-message{
+  background-color: #F44336;
+  font-size: 0.8rem;
+  position: absolute;
+  left: 0;
+  bottom: -19px;
+  color: var(--white);
+  padding: 6px 7px;
+  border-radius: 3px;
+}
+// .error-message > span{
+//   color: #F44336;
+//     text-transform: capitalize;
+//     font-size: 0.89rem;
+// }

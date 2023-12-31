@@ -1,17 +1,33 @@
 html {
   box-sizing: border-box;
+  font-family: var(--primary-font);
+  scroll-behavior: smooth;
 }
 *,
 *::after,
 *::before {
   outline: none;
   box-sizing: inherit;
+  font-family: var(--primary-font);
 }
 body {
-  font-family: var(--primary-font);
   background-color: var(--body-color);
 }
+::-webkit-scrollbar {
+  width: 10px;
+}
 
+::-webkit-scrollbar-track {
+  background: var(--light-gray);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gray);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--dark-gray);
+}
 h1 {
   font-size: 2em;
 }
@@ -33,11 +49,36 @@ h6 {
 
 .icon {
   font-size: 1.2rem;
-  color: var(--gray);
+  color: var(--dark-gray);
   transition: all 0.5s ease;
   cursor: pointer;
+  margin: 0 3px;
   &:hover,
   &:focus {
     color: var(--balck);
   }
+}
+.badge {
+  padding: 2px 5px;
+  color: var(--white);
+  font-size: 0.7rem;
+  border-radius: 10px;
+}
+.bg-danger {
+  background-color: var(--danger) !important;
+}
+.bg-success {
+  background-color: var(--green) !important;
+}
+.bg-warning {
+  background-color: var(--dark-warning) !important;
+}
+.error {
+  color: var(--danger);
+}
+.success {
+  color: var(--green);
+}
+.warning {
+  color: var(--warning);
 }

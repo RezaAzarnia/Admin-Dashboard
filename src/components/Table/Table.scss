@@ -1,4 +1,10 @@
-.table,
+table {
+  width: 100%;
+}
+thead {
+  border-bottom: 1px solid var(--light-gray);
+}
+table,
 td,
 th {
   padding: 15px !important;
@@ -6,32 +12,27 @@ th {
   font-size: 15px;
 }
 tr {
-  border-bottom: 1px solid #ddd !important;
+  border-bottom: 1px solid var(--light-gray) !important;
+  transition: all 0.2s ease;
+  &:last-child {
+    border-bottom: none !important;
+  }
+}
+tbody > tr {
+  &:hover {
+    background-color: #f6f6f6;
+  }
 }
 th {
   text-transform: capitalize;
   font-size: 12px;
-  color: var(--gray);
+  color: var(--dark-gray);
 }
 table {
-  .edit-btn {
-    padding: 5px 15px;
-    cursor: pointer;
-    border: none;
-    text-transform: capitalize;
-    font-size: 0.85rem;
-    background: var(--green);
-    color: var(--white);
-    border-radius: 5px;
-  }
-  .delete-btn {
-    padding: 5px 15px;
-    cursor: pointer;
-    border: none;
-    text-transform: capitalize;
-    font-size: 0.85rem;
-    background: var(--danger);
-    color: var(--white);
-    border-radius: 5px;
+  img {
+    width: 70px;
+    height: 70px;
+    vertical-align: middle;
+    border-radius: 10px;
   }
 }

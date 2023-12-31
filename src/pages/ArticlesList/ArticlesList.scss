@@ -1,0 +1,9 @@
+.articles-container {
+  margin: 40px 0;
+  .articles-row {
+    display: grid;
+    grid-auto-rows: 250px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+}

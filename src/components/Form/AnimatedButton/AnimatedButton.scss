@@ -1,0 +1,57 @@
+.Animated-button {
+  position: relative;
+  padding: 18px 0;
+  text-align: center;
+  overflow: hidden;
+  top: 0px;
+  width: 100%;
+  button {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    top: 0;
+    width: 100%;
+    border: none;
+    border-radius: 4px - 2;
+    cursor: pointer;
+  }
+  span {
+    display: block;
+    text-transform: capitalize;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+  color: var(--white);
+
+  }
+}
+.Animated-button {
+  button.success {
+    background-color: var(--green);
+  }
+  button.warning {
+    background-color: var(--dark-warning);
+  }
+  button.danger {
+    background-color: var(--danger);
+  }
+}
+
+.btn-icon {
+  color: var(--white);
+  position: absolute;
+  left: 0;
+  top: -40px;
+  right: 0;
+  width: 100%;
+  transition: all 0.3s;
+  font-size: 1.2rem;
+}
+
+.Animated-button:hover {
+  .btn-icon {
+    top: 20%;
+  }
+  span {
+    transform: translateY(40px);
+  }
+}

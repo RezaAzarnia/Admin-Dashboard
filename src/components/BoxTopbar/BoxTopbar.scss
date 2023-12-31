@@ -1,0 +1,11 @@
+.box-topbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  h3 {
+    text-transform: capitalize;
+  }
+  .topbar-right-side > * {
+    cursor: pointer;
+  }
+}

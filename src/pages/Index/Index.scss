@@ -3,22 +3,59 @@
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: 100px;
   justify-items: center;
-  gap: 10px;
+  gap: 14px;
 }
 .Analytics-part {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(2, 220px);
+  grid-template-rows: repeat(2, 230px);
   margin: 25px 0;
   gap: 15px;
 }
+
 .down-part-container {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   grid-template-rows: max-content;
   gap: 10px;
-  table{
+  .table {
     grid-column: 1 / span 4;
     background: var(--white);
+    padding: 15px;
   }
+}
+
+.table.full-width {
+  transform: scaleX(0);
+  transform-origin: top left;
+  transform-box: fill-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99999;
+  animation: slideIn 0.4s ease forwards;
+}
+@keyframes slideIn {
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+td.campaign-name{
+  text-transform: capitalize;
+  font-size: 0.875rem;
+}
+td.campaign-client{
+  text-transform: capitalize;
+  color: var(--dark-gray);
+}
+td.campaign-changes{
+  text-transform: capitalize;
+  color: var(--green);
+}
+td.campaign-status{
+  width: 10px;
+  text-align: center;
 }

@@ -1,0 +1,14 @@
+.rating {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    cursor: pointer;
+
+  /* Style for star icons */
+  .star-filled {
+    color: var(--dark-warning);
+  }
+  .star-empty {
+    color: var(--light-gray);
+  }
+}

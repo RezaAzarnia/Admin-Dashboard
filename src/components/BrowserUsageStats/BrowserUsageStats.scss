@@ -1,20 +1,16 @@
 .browser-usage-stats {
   grid-row: 2/3;
   background: var(--white);
-  padding: 20px;
-  .stats-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 .browsers-stats {
-  margin-top: 10px + 10;
   .browsers-list > .browser-list-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
+    padding: 12px 14px;
     border-bottom: 1px solid var(--light-gray);
     text-transform: capitalize;
     font-size: 0.9rem;

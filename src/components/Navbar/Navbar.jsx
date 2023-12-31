@@ -12,18 +12,19 @@ import './Navbar.scss'
 
 
 function Navbar() {
-    const { dispatch: toggleTaskSidebar } = useSidebarContext()
+    const { dispatch: toggleSidebar } = useSidebarContext()
 
     const [isOpenProfieMenu, setIsOpenProfileMenu] = useState(false);
     const [isOpenNotificationBox, setIsOpenNotificationBox] = useState(false);
     const [isOpenIconMenu, setIsOpenIconMenu] = useState(false);
+    const [notificationsLength, setNotificationsLength] = useState(0)
 
     const profileMenuRef = useRef();
     const notificationBoxRef = useRef();
     const iconMenuBoxRef = useRef();
 
     const handleClickOutSide = (e) => {
-        if (!profileMenuRef.current.contains(e.target) && !e.target.closest('.profile-image')) { 
+        if (!profileMenuRef.current.contains(e.target) && !e.target.closest('.profile-image')) {
             setIsOpenProfileMenu(false);
         }
         if (!notificationBoxRef.current.contains(e.target) && !e.target.closest('.notification-icon-container')) {
@@ -45,11 +46,11 @@ function Navbar() {
         <nav className="navbar">
             <div className="navbar-left-side">
                 <div className="logo-container">
-                    <img src="./images/logo.png" alt="website-logo" className="logo-img" />
+                    <img src='/images/logo.png' className="logo-img" />
                     <h3 className="brand-text">dashboard</h3>
                 </div>
                 <div className="bars-icon">
-                    <RxHamburgerMenu className='icon' />
+                    <RxHamburgerMenu className='icon' onClick={() => toggleSidebar({ type: 'TOGGLE_MAINSIDEBAR' })} />
                 </div>
             </div>
             <div className="input-group">
@@ -57,7 +58,7 @@ function Navbar() {
                 <IoIosSearch className='search-icon icon' />
             </div>
             <div className="navbar-right-side">
-                <div className="settings-icon" onClick={() => toggleTaskSidebar({ type: 'TOOGLE_TASKSIDEBAR' })}>
+                <div className="settings-icon" onClick={() => toggleSidebar({ type: 'TOOGLE_TASKSIDEBAR' })}>
                     <IoSettingsSharp className='icon icon-click' />
                 </div>
 
@@ -69,15 +70,15 @@ function Navbar() {
                 <div className="mega-menu-container">
                     <BsThreeDotsVertical className='icon' />
                 </div>
-               
+
                 <div className="notification-icon-container">
-                    <span className="notification-count">5</span>
+                    <span className="notification-length">{notificationsLength}</span>
                     <FaBell className='icon' onClick={() => setIsOpenNotificationBox(prev => !prev)} />
-                    <NotificationsBox isOpen={isOpenNotificationBox} ref={notificationBoxRef} />
+                    <NotificationsBox setNotificationsLength={setNotificationsLength} isOpen={isOpenNotificationBox} ref={notificationBoxRef} />
                 </div>
-               
+
                 <div className="profile-image" onClick={() => { setIsOpenProfileMenu(prev => !prev) }}>
-                    <img src="./images/profile.PNG" alt="profile-picture" />
+                    <img src='/images/profile.png' alt="profile-picture" />
                     <ProfileSettingMenu ref={profileMenuRef} isOpen={isOpenProfieMenu} />
                 </div>
             </div>

@@ -1,0 +1,156 @@
+.productDetail-container {
+  background-color: var(--white);
+  margin: 30px 0;
+  padding: 15px;
+  display: grid;
+  grid-template-columns: 28% 70%;
+  grid-template-rows: 100%;
+  gap: 20px;
+  height: 350px;
+  width: 100%;
+  .product-image {
+    height: 100%;
+    grid-column: 1 /2;
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .product-description {
+    height: 100%;
+    display: grid;
+    grid-template-rows: 15% 55% 10%;
+    align-items: center;
+    .price-row {
+      width: 25%;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+    .product-detail-title {
+      text-transform: capitalize;
+      font-weight: bold;
+    }
+    .discount-price {
+      text-decoration: line-through;
+      color: gray;
+      font-size: 0.8rem;
+    }
+
+  }
+}
+.product-detail-main-price{
+  color: var(--dark-green);
+  font-weight: bold;
+}
+.price-rating-part {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+ margin-top: 20px;
+}
+.watchlistBtn {
+  width: 25%;
+}
+.product-detail-info {
+  line-height: 2;
+  font-size: 1rem;
+  color: var(--dark-gray);
+  padding-right: 20px;
+  text-wrap: pretty;
+}
+
+.product-detail-tabPane {
+  background-color: var(--white);
+  margin: 20px 0;
+  padding: 15px;
+  .tabpane-header {
+    display: flex;
+    gap: 30px;
+    border-bottom: 0.5px solid var(--light-gray);
+    .tabpane-list-item {
+      font-size: 0.9rem;
+      text-transform: capitalize;
+      cursor: pointer;
+    }
+    .tabpane-list-item.active {
+      border-bottom: 2px solid var(--green);
+      padding-bottom: 10px;
+    }
+  }
+  .tabpane-body {
+    margin: 15px 0;
+    .tabpane-content {
+      font-size: 1rem;
+      display: none;
+    }
+    .tabpane-content.active {
+      display: block;
+    }
+    .product-text {
+      color: var(--dark-gray);
+      text-wrap: pretty;
+      line-height: 2;
+    }
+  }
+}
+
+.comment {
+  border: 1px solid var(--light-gray);
+  background-color: var(--white);
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.username {
+  font-weight: bold;
+  color: #333;
+}
+
+.date {
+  font-size: 14px;
+  color: var(--gray);
+}
+
+
+.content {
+  line-height: 1.6;
+  color: var(--dark-gray);
+}
+
+.answer {
+  padding: 19px 15px;
+  border-radius: 8px;
+  margin-top: 10px;
+  background-color: var(--body-color);
+  line-height: 1.5;
+}
+
+.answer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.answer-username {
+  font-weight: bold;
+}
+
+.answer-date {
+  font-size: 14px;
+  color: var(--gray);
+}
+
+.answer-content {
+  color: var(--dark-gray);
+}

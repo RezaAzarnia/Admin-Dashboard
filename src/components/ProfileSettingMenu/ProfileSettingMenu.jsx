@@ -6,11 +6,9 @@ const ProfileSettingMenu = forwardRef((props, ref) => {
     return (
         <div className={`profile-setting-dropdown ${isOpen ? "active" : ''}`} ref={ref}>
             <ul className='profile-setting-list'>
-                <Link to="/hassan">
                     <li className="setting-list-item">
                         profile
                     </li>
-                </Link>
                 <li className="setting-list-item">
                     my balance
                 </li>

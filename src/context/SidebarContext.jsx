@@ -12,13 +12,13 @@ const TOGGLE_MAINSIDEBAR = "TOGGLE_MAINSIDEBAR"
 const sidebarReducer = (state, action) => {
     switch (action.type) {
         case TOOGLE_TASKSIDEBAR:
-            return { isOpenTaskSidebar: !state.isOpenTaskSidebar }
+            return { ...state , isOpenTaskSidebar: !state.isOpenTaskSidebar }
 
         case CLOSE_TASKSIDEBAR:
-            return { isOpenTaskSidebar: false }
+            return {...state , isOpenTaskSidebar: false }
 
         case TOGGLE_MAINSIDEBAR:
-            return { isOpenMainSidebar: !state.isOpenMainSidebar }
+            return { ...state, isOpenMainSidebar: !state.isOpenMainSidebar }
 
         default:
             return state

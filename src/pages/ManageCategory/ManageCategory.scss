@@ -1,0 +1,25 @@
+.add-category-container {
+  background-color: var(--white);
+  margin: 40px 0;
+  padding: 15px;
+  form{
+    margin-bottom: 20px;
+  }
+}
+
+.add-category-container {
+  .row-add-category {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: max-content;
+    gap: 15px;
+    grid-row-gap: 45px;
+    margin: 20px 0;
+  }
+  .category-table {
+    margin: 40px 0 0;
+  }
+  .save-category-btn{
+    width: 15%;
+  }
+}
