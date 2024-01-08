@@ -3,47 +3,43 @@ import { TbMessageChatbot } from "react-icons/tb";
 import { getNotfications, seeAllNotificatios, seeNotification } from '../../services/Axios/Requests/notification';
 import Button from '../Form/Button/Button'
 import './NotificationsBox.scss';
+import useFetchItem from '../../hooks/useFetchItem'
+import useItemMutation from '../../hooks/useItemMutation';
 
 const NotificationsBox = forwardRef((props, ref) => {
+    const { data: notifs } = useFetchItem('Notification', getNotfications);
     const { isOpen, setNotificationsLength } = props;
-    const [notifications, setNotifications] = useState([])
     const [initialLoad, setInitialLoad] = useState(true)
-    const [isUpdateNotifs, setIsUpdateNotifs] = useState(false)
     const [notifId, setNotifId] = useState(0)
 
-    //get all notifs 
-    const getNotifs = async () => {
-        const response = await getNotfications();
-        const unReadNotifs = response.filter(item => item.isRead === 0)
-        setNotifications(unReadNotifs)
-        setNotificationsLength(unReadNotifs.length)
-    }
-    //read one notif 
-    const readNotifs = async () => {
-        await seeNotification(notifId);
-    };
-    //read all notifs 
-    const readAllNotifs = async () => {
-        await seeAllNotificatios(notifications)
-        setIsUpdateNotifs(true)
-    }
+    useEffect(() => {
+        setNotificationsLength(notifs?.length)
+    }, [notifs])
 
-   //use this model to don't request at first page loading 
+    //use this model to don't request at first page loading 
     useEffect(() => {
         if (!initialLoad) {
             readNotifs();
         }
     }, [notifId]);
 
-   //use effect to get notifs by change notif id and read all notifs 
-    useEffect(() => {
-        getNotifs();
-    }, [notifId, isUpdateNotifs]);
-
     //change the initial load - can request after page load
     useEffect(() => {
         setInitialLoad(false);
-    }, []);;
+    }, []);
+
+
+    //read one notif 
+    const { mutate: readNotifs } = useItemMutation(async () => {
+        return await seeNotification(notifId)
+    }, 'Notification')
+
+    //read all notifs 
+    const { mutate: readAllNotifs } = useItemMutation(async () => {
+        return await seeAllNotificatios(notifs)
+    }, 'Notification')
+
+
 
 
     return (
@@ -51,12 +47,13 @@ const NotificationsBox = forwardRef((props, ref) => {
             <div className="notification-header">
                 <h4>notification</h4>
                 <span onClick={readAllNotifs} className='clearBtn'>clear all</span>
+                {/* {isLoading ? <span>loading</span> : ''} */}
             </div>
             <div className="notification-body">
                 <ul className='nofication-list'>
                     {
-                        notifications.length > 0 ?
-                            notifications.map(notif => {
+                        notifs?.length > 0 ?
+                            notifs?.map(notif => {
                                 return <li key={notif.id} className='notification-list-item' >
                                     <div className="text-part">
                                         <div className="notif-icon">
@@ -67,9 +64,7 @@ const NotificationsBox = forwardRef((props, ref) => {
                                         </div>
                                     </div>
                                     <div className="notif-time">
-                                        <Button title='see' mode='success' onclick={() => {
-                                            setNotifId(notif.id)
-                                        }}
+                                        <Button title='see' mode='success' onclick={() => setNotifId(notif.id)}
                                         />
                                     </div>
                                 </li>

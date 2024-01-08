@@ -24,6 +24,14 @@ const handleResponse = (response, successMessage) => {
     };
   }
 };
+const handleService = async (serviceFunction) => {
+  try {
+    const response = await serviceFunction;
+    return response;
+  } catch (error) {
+    return [];
+  }
+};
 //remove extra spaces in the data
 const sanitizeData = (data) => {
   const trimedUsersData = Object.fromEntries(
@@ -43,4 +51,11 @@ const initialDate = () => {
 const initialTime = () => {
   return date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
 };
-export { baseURL, handleResponse, sanitizeData, initialDate, initialTime };
+export {
+  baseURL,
+  handleService,
+  handleResponse,
+  sanitizeData,
+  initialDate,
+  initialTime,
+};

@@ -5,7 +5,7 @@ import Button from '../../Form/Button/Button';
 import './ConfirmModal.scss'
 
 
-export default function ConfirmModal({ action, isOpen, onCancel, onConfirm }) {
+export default function ConfirmModal({ action, isOpen, onCancel, onConfirm, isLoading }) {
     let title, message, confirmLabel;
     switch (action) {
         case 'delete':
@@ -30,8 +30,10 @@ export default function ConfirmModal({ action, isOpen, onCancel, onConfirm }) {
     }
     return ReactDOM.createPortal(
         <>
-            <div className='overlay active' onClick={() => onCancel()}></div>
+            <div className='overlay active' onClick={() => !isLoading && onCancel()}></div>
             <div className={`modal confirm-modal ${isOpen ? 'active' : ''}`}>
+
+
                 <div className={`modal-header ${action}`}>
                     <BiSolidError />
                     <h2>{title}</h2>
@@ -42,8 +44,13 @@ export default function ConfirmModal({ action, isOpen, onCancel, onConfirm }) {
                     </span>
                 </div>
                 <div className="confirm-modal-button">
-                    <Button title='cancel' onclick={() => onCancel()} />
-                    <Button title={confirmLabel} mode={`${action === 'accept' ? 'success' : 'error'} `} onclick={onConfirm} />
+                    <Button title='cancel' onclick={() => !isLoading && onCancel()} />
+                    <Button
+                        isLoading={isLoading}
+                        title={confirmLabel}
+                        mode={`${action === 'accept' ? 'success' : 'error'} `}
+                        onclick={onConfirm}
+                    />
                 </div>
             </div>
         </>

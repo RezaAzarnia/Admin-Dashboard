@@ -14,14 +14,10 @@
     border: 1px solid var(--gray);
     outline: none;
     border-radius: 2px;
-    &:focus{
-      box-shadow: 0 0 0 0 red;
-    }
   }
   input::placeholder {
     text-transform: capitalize;
   }
-  
 }
 textarea {
   width: 100%;
@@ -34,8 +30,8 @@ select {
   font-size: 1rem;
   //   color: var(--gray);
 }
-.error-message{
-  background-color: #F44336;
+.error-message {
+  background-color: #f44336;
   font-size: 0.8rem;
   position: absolute;
   left: 0;
@@ -44,8 +40,7 @@ select {
   padding: 6px 7px;
   border-radius: 3px;
 }
-// .error-message > span{
-//   color: #F44336;
-//     text-transform: capitalize;
-//     font-size: 0.89rem;
-// }
+:is(input, select, textarea):focus {
+  transition: all 0.4s ease;
+  box-shadow: 0 0 1.5px 0 var(--black);
+}

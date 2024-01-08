@@ -9,10 +9,12 @@
   color: var(--white);
   width: 100%;
   height: 100%;
-  background-color: var(--gray)
-  
+  background-color: var(--gray);
+  &:disabled{
+      opacity: 0.5;
+       cursor: not-allowed !important;
+    }
 }
-
 
 .button.success {
   background-color: var(--green);

@@ -1,64 +1,67 @@
 import React, { useEffect, useState } from 'react'
-import { getSingleProduct } from '../../services/Axios/Requests/products';
 import { useParams } from 'react-router-dom'
 import { FaHeart } from "react-icons/fa";
 import AnimatedButton from '../../Components/Form/AnimatedButton/AnimatedButton';
 import BreadCrump from '../../Components/BreadCrump/BreadCrump';
 import RateShow from '../../Components/RateShow/RateShow';
+import useFetchSingleItem from '../../hooks/useFetchSingleItem';
+import { getSingleProduct } from '../../services/Axios/Requests/products'
 import './ProductDetail.scss'
 
 export default function ProductDetail() {
     const { id } = useParams('id');
-    const [productInfo, setProductInfo] = useState({});
+    const { data: productInfo } = useFetchSingleItem('Products', id, getSingleProduct)
+
     const [activeTabpane, setActiveTabpane] = useState('Description');
     const [productComments, setProductComments] = useState([])
-    const getProductInfos = async () => {
-        const response = await getSingleProduct(id);
-        console.log(response)
-        setProductInfo(response)
-    };
+    
     useEffect(() => {
-        getProductInfos();
-    }, [id]);
-
-    useEffect(() => {
-        const acceptedComments = productInfo.comments ? productInfo.comments.filter(comment => comment.isAccept === 1) : []
+        const acceptedComments = comments ? comments.filter(comment => comment.isAccept === 1) : []
         setProductComments(acceptedComments)
     }, [productInfo])
 
+    //destructure the product infos  
+    const {
+        productTitle,
+        productCover,
+        productDescription,
+        productDiscount,
+        productPrice,
+        comments,
+    } = productInfo || {};
 
     return (
         <>
             <BreadCrump />
             <div className="productDetail-container">
                 <div className="product-image">
-                    <img src={productInfo.productCover} alt="" />
+                    <img src={productCover} alt="" />
                 </div>
                 <div className="product-description">
                     <div className="product-detial-top-part">
-                        <h1 className="product-detail-title">{productInfo.productTitle}</h1>
+                        <h1 className="product-detail-title">{productTitle}</h1>
                     </div>
-                    <p className="product-detail-info">{productInfo.productDescription}</p>
+                    <p className="product-detail-info">{productDescription}</p>
                     <div className="price-rating-part">
                         {
-                            productInfo.productDiscount > 0 ?
+                            productDiscount > 0 ?
                                 <>
                                     <div className='price-row'>
                                         <div className="price-with-discount">
                                             <h2 className="product-detail-main-price">
-                                                ${(productInfo.productPrice - (productInfo.productPrice / 100) * productInfo.productDiscount)}
+                                                ${(productPrice - (productPrice / 100) * productDiscount)}
                                             </h2>
                                             <p className="discount-price">
-                                                {productInfo.productPrice}
+                                                {productPrice}
                                             </p>
                                         </div>
                                         <div className="price-discount-value">
-                                            <div className="badge">{productInfo.productDiscount}%</div>
+                                            <div className="badge">{productDiscount}%</div>
                                         </div>
                                     </div>
                                 </>
                                 :
-                                <h2 className="product-detail-main-price">${productInfo.productPrice}</h2>
+                                <h2 className="product-detail-main-price">${productPrice}</h2>
                         }
                         <div className="rating-part">
                             <RateShow rate={5} />
@@ -89,7 +92,7 @@ export default function ProductDetail() {
                 </ul >
                 <div className="tabpane-body">
                     <p className={`tabpane-content product-text ${activeTabpane === 'Description' ? 'active' : ''}`}>
-                        {productInfo.productDescription}
+                        {productDescription}
                     </p>
                     <div className={`tabpane-content ${activeTabpane === 'Comments' ? 'active' : ''}`}>
                         {

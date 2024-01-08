@@ -1,51 +1,45 @@
-import React, { useEffect, useState } from 'react'
-import { deleteOrder, getUsersOrders } from '../../services/Axios/Requests/orders'
+import React, { useState } from 'react'
+import { deleteOrder, getPaginatedOrders } from '../../services/Axios/Requests/orders'
 import BreadCrump from '../../Components/BreadCrump/BreadCrump'
 import Table from '../../Components/Table/Table'
 import Button from '../../Components/Form/Button/Button'
 import useConfirmModal from '../../hooks/useConfirmModal'
 import useToast from '../../hooks/useToast'
 import Alert from '../../Components/Alert/Alert'
+import useDeleteItem from '../../hooks/useDeleteItem'
+import Paginator from '../../Components/Paginator/Paginator'
+import usePagination from '../../hooks/usePagination'
 import './ManageOrders.scss'
 export default function ManageOrders() {
-    const [orders, setOrders] = useState([])
     const [orderId, setOrderId] = useState(0)
+    const [page, setPage] = useState(1)
     const { showToast, ToastComponent } = useToast()
+    const { data: orders, isPreviousData, totalPage, computedIndex } = usePagination('Orders', getPaginatedOrders, page)
     const { showConfirmModal: showDeleteModal, hideConfirmModal: hideDeleteModal, ConfirmModalComponent: DeleteModalComponent } = useConfirmModal()
+
     let productPrice = null;
     let totalPrice = null;
 
-    const getOrders = async () => {
-        const response = await getUsersOrders()
-        setOrders(response)
-        console.log(response)
-    }
-    const removeOrder = async () => {
-        const deleteResponse = await deleteOrder(orderId)
-        hideDeleteModal()
-        switch (deleteResponse.status) {
+    const { mutate: removeOrder } = useDeleteItem(async () => {
+        const deleteOrderResponse = await deleteOrder(orderId)
+        switch (deleteOrderResponse.status) {
             case 200:
-                showToast('success', deleteResponse.message)
-                getOrders()
-                break
+                showToast('success', deleteOrderResponse.message)
+                hideDeleteModal()
+                return deleteOrderResponse
             default:
-                showToast('error', deleteResponse.message)
-                break
+                showToast('error', deleteOrderResponse.message)
+                return Promise.reject(deleteOrderResponse.message)
         }
-    }
-    useEffect(() => {
-        getOrders()
-    }, [])
+    }, ['Orders', page], orderId)
 
 
     return (
         <>
-            {ToastComponent()}
-            {DeleteModalComponent('delete', removeOrder)}
             <BreadCrump />
             <div className="orders-container">
                 {
-                    orders.length > 0 ?
+                    orders?.length > 0 ?
                         <Table>
                             <thead>
                                 <tr>
@@ -64,12 +58,11 @@ export default function ManageOrders() {
                             </thead>
                             <tbody>
                                 {
-                                    orders.length > 0 &&
-                                    orders.map((order, index) => {
+                                    orders?.map((order, index) => {
                                         productPrice = (order.product.productPrice - (order.product.productPrice / 100) * order.product.productDiscount).toFixed(2);
                                         totalPrice = (productPrice * order.quantity).toFixed(2);
                                         return <tr key={order.id}>
-                                            <td>{index + 1}</td>
+                                            <td>{computedIndex + index}</td>
                                             <td>{order.user.fullName}</td>
                                             <td>{order.product.productTitle}</td>
                                             <td><img src={order.product.productCover} alt="" /></td>
@@ -93,7 +86,15 @@ export default function ManageOrders() {
 
                         : <Alert message='no orders available' />
                 }
+                <Paginator
+                    page={page}
+                    setPage={setPage}
+                    isPreviousData={isPreviousData}
+                    totalPage={totalPage}
+                    data={orders} />
             </div>
+            {ToastComponent()}
+            {DeleteModalComponent('delete', removeOrder)}
         </>
     )
 }

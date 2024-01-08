@@ -1,18 +1,25 @@
 import React, { useEffect, useState } from 'react'
-import { addDiscount, deleteProduct, editProduct, getProducts } from '../../services/Axios/Requests/products';
+import { addDiscount, deleteProduct, editProduct, getPaginatedProducts } from '../../services/Axios/Requests/products';
 import Table from '../../Components/Table/Table'
 import BreadCrump from '../../Components/BreadCrump/BreadCrump'
 import EditModal from '../../Components/Modals/EditModal/EditModal'
 import useToast from '../../hooks/useToast'
 import Input from '../../components/Form/Input/Input';
-import Button from '../../components/Form/Button/Button'
+import Button from '../../Components/Form/Button/Button'
 import UploadButton from '../../Components/Form/UploadButton/UploadButton'
 import useConfirmModal from '../../hooks/useConfirmModal';
 import Alert from '../../Components/Alert/Alert';
+import useDeleteItem from '../../hooks/useDeleteItem'
+import useItemMutation from '../../hooks/useItemMutation'
+import Paginator from '../../Components/Paginator/Paginator';
+import usePagination from '../../hooks/usePagination';
 import './ManageProducts.scss'
 
 export default function ManageProducts() {
-    const [products, setProducts] = useState([])
+    //get items
+    const [page, setPage] = useState(1)
+    const { data: products, isPreviousData, totalPage, computedIndex } = usePagination('Products', getPaginatedProducts, page)
+
     const [productId, setProductId] = useState(0)
     const [isShowEditModal, setIsShowEditModal] = useState(false)
     const [isShowDiscountModal, setIsShowDiscountModal] = useState(false)
@@ -23,17 +30,12 @@ export default function ManageProducts() {
     const { showToast, ToastComponent } = useToast()
     const { showConfirmModal: showDeleteModal, hideConfirmModal: hideDeleteModal, ConfirmModalComponent: DeleteModalComponent } = useConfirmModal()
 
-
     useEffect(() => {
         if (coverErrors.length > 0) {
             showToast('error', coverErrors)
         }
         setCoverErrors('')
     }, [coverErrors])
-
-    useEffect(() => {
-        getProduct()
-    }, [])
     const validateEditForm = (data) => {
         let errors = []
 
@@ -69,47 +71,11 @@ export default function ManageProducts() {
         }
         return errors;
     }
-    const getProduct = async () => {
-        const response = await getProducts()
-        setProducts(response)
-    }
-    const removeProduct = async () => {
-        const response = await deleteProduct(productId)
-        hideDeleteModal();
-        switch (response.status) {
-            case 200:
-                showToast('success', response.message)
-                getProduct()
-                break
-            default:
-                showToast('error', response.message)
-                break
-        }
-    }
-    const handleEditProduct = async (values) => {
-        const productErrors = validateEditForm(values)
-        if (productErrors.length > 0) {
-            showToast('error', productErrors.map((item, index) => <p key={index + 1}>{item}</p>))
-            return
-        }
-        //delete the category objetc in edit mode and just send the category id
-        const { category, ...newValues } = values;
-        const editResponse = await editProduct(productId, { ...newValues })
-        switch (editResponse.status) {
-            case 200:
-                showToast('success', editResponse.message)
-                setIsShowEditModal(false)
-                getProduct()
-                setProductCover('')
-                break
-            default:
-                showToast('error', editResponse.message)
-                break
-        }
-    }
-    const handleAddDiscount = async (values) => {
-        const { productDiscount } = values;
+
+    const { mutate: handleAddDiscount } = useItemMutation(async (values) => {
         const errors = []
+        const { productDiscount } = values;
+        //check if theer is no edit on add discount close and do nothing
         if (productDiscount === discountInitialValue.productDiscount) {
             setIsShowDiscountModal(false)
             return
@@ -121,28 +87,139 @@ export default function ManageProducts() {
         }
         if (errors.length > 0) {
             showToast('error', errors[0])
-            return
+            return Promise.reject(errors[0])
         }
         const discountResponse = await addDiscount(productId, productDiscount)
         switch (discountResponse.status) {
             case 200:
                 showToast('success', discountResponse.message)
                 setIsShowDiscountModal(false)
-                getProduct()
-                break
+                return discountResponse
             default:
                 showToast('error', discountResponse.message)
-                break
+                return Promise.reject(discountResponse.message)
+        }
+    }, "Products")
+
+    const { mutate: removeProduct, isLoading: isProductDeleting } = useDeleteItem(async () => {
+        const removeResponse = await deleteProduct(productId)
+        hideDeleteModal();
+        switch (removeResponse.status) {
+            case 200:
+                showToast('success', removeResponse.message)
+                return removeResponse
+            default:
+                showToast('error', removeResponse.message)
+                return Promise.reject(removeResponse.message)
+        }
+    }, ["Products", page], productId)
+
+    const { mutate: handleEditProduct } = useItemMutation(async (values) => {
+        const productErrors = validateEditForm(values)
+        //check if product values did not change no request to sderver
+        const isProductsValuesChanged = Object.keys(values).some((key) => values[key] !== editProductInitialValues[key]);
+        if (!isProductsValuesChanged) {
+            setIsShowEditModal(false)
+            return Promise.reject('no change on products')
         }
 
-    }
+        if (productErrors.length > 0) {
+            showToast('error', productErrors.map((item, index) => <p key={index + 1}>{item}</p>))
+            //add this  reject to don't have any request on error
+            return Promise.reject(productErrors[0])
+        }
+        //delete the category objetc in edit mode and just send the category id
+        const { category, ...newValues } = values;
+
+        const editResponse = await editProduct(productId, { ...newValues })
+        switch (editResponse.status) {
+            case 200:
+                showToast('success', editResponse.message)
+                setIsShowEditModal(false)
+                setProductCover('')
+                return editResponse
+            default:
+                showToast('error', editResponse.message)
+                return Promise.reject(editResponse.message)
+        }
+    }, "Products")
+
     return (
         <>
+            <BreadCrump />
+            <div className="product-action-container">
+                {products?.length > 0 ?
+                    <div className="products-table">
+                        <Table>
+                            <thead>
+                                <tr>
+                                    <th>id</th>
+                                    <th>product img</th>
+                                    <th>product Name</th>
+                                    <th>price</th>
+                                    <th>discount</th>
+                                    <th>count</th>
+                                    <th>category </th>
+                                    <th>edit</th>
+                                    <th>delete</th>
+                                    <th>add discount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    products?.map((product, index) => {
+                                        return <tr key={product.id}>
+                                            <td>{computedIndex + index}</td>
+                                            <td><img src={product.productCover} className='product-image' /></td>
+                                            <td>{product.productTitle}</td>
+                                            <td>${product.productPrice}</td>
+                                            <td>{product.productDiscount}%</td>
+                                            <td>{product.productCount}</td>
+                                            <td>{product.category.categoryName}</td>
+                                            <td>
+                                                <Button title='edit' mode='success' onclick={() => {
+                                                    setIsShowEditModal(true)
+                                                    setProductId(product.id)
+                                                    setEditProductInitialValues(product)
+                                                    setProductCover(product.productCover)
+
+                                                }} />
+                                            </td>
+                                            <td>
+                                                <Button title='delete' mode='error' onclick={() => {
+                                                    showDeleteModal()
+                                                    setProductId(product.id)
+                                                }} />
+                                            </td>
+                                            <td className='discount-btn'>
+                                                <Button title='add discount' mode='warning' onclick={() => {
+                                                    setProductId(product.id)
+                                                    setIsShowDiscountModal(true)
+                                                    setDiscountInitialValue({ productDiscount: product.productDiscount })
+                                                }} />
+                                            </td>
+                                        </tr>
+                                    })
+                                }
+                            </tbody>
+                        </Table>
+
+                    </div>
+                    : <Alert message='no products available' />
+                }
+                <Paginator
+                    page={page}
+                    setPage={setPage}
+                    isPreviousData={isPreviousData}
+                    totalPage={totalPage}
+                    data={products} />
+            </div>
             {ToastComponent()}
-            {DeleteModalComponent('delete', removeProduct)}
+            {DeleteModalComponent('delete', removeProduct, isProductDeleting)}
             {
                 isShowEditModal &&
-                <EditModal isOpen={isShowEditModal}
+                <EditModal
+                    isOpen={isShowEditModal}
                     setIsOpen={setIsShowEditModal}
                     initialValues={editProductInitialValues}
                     onSubmit={handleEditProduct}
@@ -191,69 +268,6 @@ export default function ManageProducts() {
                     <Input type='number' name='productDiscount' lableTitle='enter product disount' />
                 </EditModal>
             }
-            <BreadCrump />
-            <div className="product-action-container">
-                {products.length > 0 ?
-                    <div className="products-table">
-                        <Table>
-                            <thead>
-                                <tr>
-                                    <th>id</th>
-                                    <th>product img</th>
-                                    <th>product Name</th>
-                                    <th>price</th>
-                                    <th>discount</th>
-                                    <th>count</th>
-                                    <th>category </th>
-                                    <th>edit</th>
-                                    <th>delete</th>
-                                    <th>add discount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    products.length > 0 && (
-                                        products.map((product, index) => {
-                                            return <tr key={product.id}>
-                                                <td>{index + 1}</td>
-                                                <td><img src={product.productCover} className='product-image' /></td>
-                                                <td>{product.productTitle}</td>
-                                                <td>${product.productPrice}</td>
-                                                <td>{product.productDiscount}%</td>
-                                                <td>{product.productCount}</td>
-                                                <td>{product.category.categoryName}</td>
-                                                <td>
-                                                    <Button title='edit' mode='success' onclick={() => {
-                                                        setIsShowEditModal(true)
-                                                        setProductId(product.id)
-                                                        setEditProductInitialValues(product)
-                                                        setProductCover(product.productCover)
-
-                                                    }} />
-                                                </td>
-                                                <td>
-                                                    <Button title='delete' mode='error' onclick={() => {
-                                                        showDeleteModal()
-                                                        setProductId(product.id)
-                                                    }} />
-                                                </td>
-                                                <td className='discount-btn'>
-                                                    <Button title='add discount' mode='warning' onclick={() => {
-                                                        setProductId(product.id)
-                                                        setIsShowDiscountModal(true)
-                                                        setDiscountInitialValue({ productDiscount: product.productDiscount })
-                                                    }} />
-                                                </td>
-                                            </tr>
-                                        })
-                                    )
-                                }
-                            </tbody>
-                        </Table>
-                    </div>
-                    : <Alert message='no products available' />
-                }
-            </div>
         </>
     )
 }

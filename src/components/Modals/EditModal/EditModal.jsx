@@ -4,10 +4,10 @@ import ReactDOM from 'react-dom';
 import Button from '../../Form/Button/Button';
 import './EditModal.scss'
 
-export default function EditModal({ isOpen, setIsOpen, title, children, initialValues, onSubmit }) {
+export default function EditModal({ isOpen, setIsOpen, isLoading, title, children, initialValues, onSubmit }) {
   return ReactDOM.createPortal(
     <>
-      <div className='overlay active' onClick={() => setIsOpen(false)}></div>
+      <div className='overlay active' onClick={() => !isLoading && setIsOpen(false)}></div>
       <div className={`edit-modal modal ${isOpen ? 'active' : ''}`}>
         <div className="modal-header">
           <h2>{title}</h2>
@@ -17,8 +17,13 @@ export default function EditModal({ isOpen, setIsOpen, title, children, initialV
             {children}
             <div className="edit-modal-btn-row">
               <div className="edit-modal-buttons">
-                <Button title='cancel' mode='error' onclick={() => setIsOpen(false)} />
-                <Button title={title} mode='success' type='submit' />
+                <Button title='cancel' mode='error' onclick={() => !isLoading && setIsOpen(false)} />
+                <Button
+                  isLoading={isLoading}
+                  title={title}
+                  mode='success'
+                  type='submit'
+                />
               </div>
             </div>
           </Form>

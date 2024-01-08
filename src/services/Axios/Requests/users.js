@@ -7,16 +7,16 @@ import {
 
 let sanitizeUserData = {};
 
-const getUsers = async () => {
-  try {
-    const response = await baseURL.get("/users");
-    const [, ...users] = response.data;
-    return users || [];
-  } catch (error) {
-    return [];
-  }
+const usersService = {
+  getAllUsers: async () => {
+    const response = await baseURL.get(`/users`);
+    return response.data;
+  },
+  getPaginatedUsers: async (page = 1, limit = 5) => {
+    const response = await baseURL.get(`/users?_page=${page}&&_limit=${limit}`);
+    return response;
+  },
 };
-
 const checkExistUser = async (user) => {
   const users = await getUsers();
   const isUserExist = users?.some(
@@ -70,4 +70,4 @@ const deleteUser = async (userID) => {
   }
 };
 
-export { addUser, getUsers, editUser, deleteUser };
+export { addUser, usersService, editUser, deleteUser };

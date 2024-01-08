@@ -1,25 +1,34 @@
-import { baseURL, handleResponse, sanitizeData } from "../configs/Configs";
+import {
+  baseURL,
+  handleResponse,
+  handleService,
+  sanitizeData,
+} from "../configs/Configs";
 let sanitizeCategoryData;
-
-
 
 const addCategory = async (categoryData) => {
   sanitizeCategoryData = sanitizeData(categoryData);
   try {
-    const response = await baseURL.post("/categories", { ...sanitizeCategoryData });
+    const response = await baseURL.post("/categories", {
+      ...sanitizeCategoryData,
+    });
     return handleResponse(response, "category added succesfully");
   } catch (error) {
     return error;
   }
 };
 
-const getCategory = async () => {
-  try {
-    const response = await baseURL.get("/categories");
-    return response.data.reverse();
-  } catch (error) {
-    return error;
-  }
+const categoryService = {
+  getAllCategory: async () => {
+    const response = await handleService(baseURL.get("/categories"));
+    return response.data;
+  },
+  getPaginatedCategory: async (page = 1, limit = 5) => {
+    const response = await handleService(
+      `/categories?_page=${page}&&_limit=${limit}`
+    );
+    return response;
+  },
 };
 
 const deleteCategory = async (categoryId) => {
@@ -42,4 +51,4 @@ const editCategory = async (categoryId, categoryData) => {
     return error;
   }
 };
-export { getCategory, addCategory, deleteCategory, editCategory };
+export { categoryService, addCategory, deleteCategory, editCategory };

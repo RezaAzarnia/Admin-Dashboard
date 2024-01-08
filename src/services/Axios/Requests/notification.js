@@ -2,7 +2,7 @@ import { baseURL, handleResponse } from "../configs/Configs";
 const getNotfications = async () => {
   try {
     const notifications = await baseURL.get("/notifications");
-    return notifications.data;
+    return notifications.data.filter((item) => item.isRead == 0);
   } catch (error) {
     return error;
   }

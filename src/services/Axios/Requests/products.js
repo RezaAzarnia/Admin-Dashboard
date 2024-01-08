@@ -6,14 +6,21 @@ import {
 } from "../configs/Configs";
 let sanitizeProductData;
 
-const getProducts = async () => {
-  try {
-    const response = await baseURL.get("/products?_expand=category");
-    return response.data.reverse();
-  } catch (error) {
-    return error;
-  }
+const productService = {
+  getAllProducts: async () => {
+    const response = await baseURL.get(
+      `/products?_expand=category`
+    );
+    return response.data;
+  },
+  getPaginatedProducts: async (page = 1, limit = 5) => {
+    const response = await handleService(
+      `/products?_expand=category&&_page=${page}&&_limit=${limit}`
+    );
+    return response;
+  },
 };
+
 const getSingleProduct = async (productId) => {
   try {
     const response = await baseURL.get(
@@ -50,7 +57,7 @@ const addDiscount = async (productID, productDiscount) => {
   }
 };
 const editProduct = async (productID, productData) => {
-  console.log(productData)
+  console.log(productData);
   sanitizeProductData = sanitizeData(productData);
   try {
     const response = await baseURL.put(`/products/${productID}`, {
@@ -62,7 +69,6 @@ const editProduct = async (productID, productData) => {
   }
 };
 
-
 const deleteProduct = async (productID) => {
   try {
     const response = await baseURL.delete(`/products/${productID}`);
@@ -73,7 +79,7 @@ const deleteProduct = async (productID) => {
 };
 export {
   addProduct,
-  getProducts,
+  productService,
   getSingleProduct,
   deleteProduct,
   editProduct,

@@ -13,7 +13,7 @@ export default function Modal({ isOpen, setIsOpen, children, title }) {
                     <h2>{title}</h2>
                 </div>
                 {children}
-                <Button title='close' mode='error' onclick={() =>setIsOpen(false)}/>
+                <Button title='close' mode='error' onclick={() => setIsOpen(false)} />
             </div>
         </>
         ,

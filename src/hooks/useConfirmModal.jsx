@@ -11,14 +11,16 @@ export default function useConfirmModal() {
     const hideConfirmModal = () => {
         setIsShowDeletModal(false)
     }
-    const ConfirmModalComponent = (action, confirmFunction) => {
+    const ConfirmModalComponent = (action, confirmFunction , isLoading) => {
         return (
             isShowDeleteModal &&
             <ConfirmModal
             action={action} 
             isOpen={isShowDeleteModal}
             onConfirm={confirmFunction} 
-            onCancel={hideConfirmModal} />
+            onCancel={hideConfirmModal} 
+            isLoading={isLoading}
+            />
         )
     }
     return { showConfirmModal, hideConfirmModal, ConfirmModalComponent }

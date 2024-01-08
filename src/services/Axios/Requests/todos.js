@@ -30,7 +30,7 @@ const getTodos = async () => {
 const changeTodoStatus = async (todoId, isDone) => {
   try {
     const response = await baseURL.patch(`/todos/${todoId}`, {
-      isDone: !isDone
+      isDone: !isDone,
     });
     return handleResponse(response, "todo isDone changed");
   } catch (error) {

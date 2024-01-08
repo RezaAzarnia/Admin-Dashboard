@@ -1,44 +1,36 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import BreadCrump from '../../Components/BreadCrump/BreadCrump'
 import SectionHeader from '../../Components/SectionHeader/SectionHeader'
 import DOMPurify from 'dompurify'
 import { useParams } from 'react-router-dom'
-import { getSingleArticle } from '../../services/Axios/Requests/articles'
 import { FaRegCalendarAlt, FaUser } from "react-icons/fa";
-
+import useFetchSingleItem from '../../hooks/useFetchSingleItem'
+import { getSingleArticle } from '../../services/Axios/Requests/articles'
 import './ArticleDetail.scss'
 export default function ArticleDetail() {
     const { id } = useParams('id');
-    const [article, setArticle] = useState({})
-
-    const getArticleInfo = async () => {
-        const response = await getSingleArticle(id)
-        setArticle(response)
-    }
-    useEffect(() => {
-        getArticleInfo()
-    }, [id])
-
+    const { data: article } = useFetchSingleItem("Articles", id, getSingleArticle)
+    const { articleTitle, author, publishedDate, articleCover, articleBody } = article || {}
     return (
         <>
             <BreadCrump />
             <div className="article-container">
-                <SectionHeader title={article.articleTitle} />
+                <SectionHeader title={articleTitle} />
                 <div className="article-author-row">
                     <div className="article-author">
                         <FaUser />
-                        <span>{article.author}</span>
+                        <span>{author}</span>
                     </div>
                     <div className="article-publishDate">
                         <FaRegCalendarAlt />
-                        <span>{article.publishedDate}</span>
+                        <span>{publishedDate}</span>
                     </div>
                 </div>
                 <div className="article-cover">
-                    <img src={article.articleCover} />
+                    <img src={articleCover} />
                 </div>
                 <div className="articel-body-container">
-                    <div className='article-body' dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.articleBody) }}></div>
+                    <div className='article-body' dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(articleBody) }}></div>
 
 
                 </div>

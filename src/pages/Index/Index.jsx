@@ -1,8 +1,14 @@
 import React, { useState } from 'react'
-import { SlUserFollowing, SlLayers } from "react-icons/sl";
+import { useQueries } from 'react-query';
+import { productService} from '../../services/Axios/Requests/products';
+import { ordersService} from '../../services/Axios/Requests/orders';
+import { usersService } from '../../services/Axios/Requests/users';
+import { articleService } from '../../services/Axios/Requests/articles';
+import { SlUserFollowing, SlLayers , SlBasket } from "react-icons/sl";
 import { IoPlayBackOutline, IoRefreshSharp } from "react-icons/io5";
 import { RiFullscreenFill } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
+
 import DetailBox from '../../Components/DetailBox/DetailBox';
 import UserStaticBox from '../../components/UserStaticBox/UserStaticBox';
 import SatisficationIndicator from '../../components/SatisficationIndicator/SatisficationIndicator';
@@ -15,17 +21,23 @@ import './Index.scss'
 
 export default function Index() {
     const [fullPageTable, setFullPageTable] = useState(false)
-    const handleFullPageTable = () => {
-        setFullPageTable(prev => !prev)
-    }
+
+    const [products, users, articles, orders] = useQueries([
+        { queryKey: 'Products', queryFn: () => productService.getAllProducts() },
+        { queryKey: 'Users', queryFn: () => usersService.getAllUsers() },
+        { queryKey: 'Articles', queryFn: () => articleService.getAllArticles() },
+        { queryKey: 'Orders', queryFn: () => ordersService.getAllOrders() }
+    ])
+    const handleFullPageTable = () => setFullPageTable(prev => !prev)
     return (
         <>
             <div className="detail-box-row">
-                <DetailBox title='users' symbol={<SlUserFollowing />} count={100} />
-                <DetailBox title='orders' symbol={<SlUserFollowing />} count={60} />
-                <DetailBox title='products' symbol={<IoPlayBackOutline />} count={200} />
-                <DetailBox title='articles' symbol={<SlLayers />} count={40} />
+                <DetailBox title='users' symbol={<SlUserFollowing />} count={!users.isLoading && users.data?.length} />
+                <DetailBox title='orders' symbol={<SlBasket />} count={!orders.isLoading && orders.data?.length} />
+                <DetailBox title='products' symbol={<IoPlayBackOutline />} count={!products.isLoading && products.data?.length} />
+                <DetailBox title='articles' symbol={<SlLayers />} count={!articles.isLoading && articles?.data.length} />
             </div>
+
             <div className="Analytics-part">
                 <UserStaticBox />
                 <SatisficationIndicator />
@@ -39,7 +51,6 @@ export default function Index() {
                         <RiFullscreenFill className='icon' onClick={handleFullPageTable} />
                         <BsThreeDotsVertical className='icon' />
                     </BoxTopbar>
-
                     <Table>
                         <thead>
                             <tr>

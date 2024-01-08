@@ -1,29 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import ArticleCard from '../../Components/ArticeCard/ArticleCard'
 import BreadCrump from '../../Components/BreadCrump/BreadCrump'
-import { getArticles } from '../../services/Axios/Requests/articles'
+import { getAllArticles } from '../../services/Axios/Requests/articles'
 import Alert from '../../Components/Alert/Alert'
+import useFetchItem from '../../hooks/useFetchItem'
 import './ArticlesList.scss'
 
 export default function ArticlesList() {
-  const [articles, setArticles] = useState([])
-  const getArticle = async () => {
-    const response = await getArticles()
-    setArticles(response)
-  }
-  useEffect(() => {
-    getArticle()
-  }, [])
-
+  const { data: articles } = useFetchItem('Articles', getAllArticles)
   return (
     <>
       <BreadCrump />
       <div className='articles-container'>
         {
-          articles.length > 0 ?
+          articles?.length > 0 ?
             <div className="articles-row">
               {
-                articles.map(item => {
+                articles?.map(item => {
                   return <ArticleCard {...item} key={item.id} />
                 })
               }

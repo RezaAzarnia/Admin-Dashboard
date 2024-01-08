@@ -5,12 +5,12 @@ import {
   initialTime,
 } from "../configs/Configs";
 
-const getComments = async () => {
+const getComments = async (page = 1, limit = 5) => {
   try {
     const comments = await baseURL.get(
-      "/comments?_expand=product"
+      `/comments?_expand=product&&_page=${page}&&_limit=${limit}`
     );
-    return comments.data;
+    return comments;
   } catch (error) {
     return error;
   }

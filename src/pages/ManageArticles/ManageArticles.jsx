@@ -1,49 +1,44 @@
-import React, { useEffect, useState } from 'react'
-import { deleteArticle, getArticles } from '../../services/Axios/Requests/articles'
+import React, { useState } from 'react'
+import { deleteArticle, getPaginatedArticles } from '../../services/Axios/Requests/articles'
 import BreadCrump from '../../Components/BreadCrump/BreadCrump'
 import SectionHeader from '../../Components/SectionHeader/SectionHeader'
 import Table from '../../Components/Table/Table'
 import Alert from '../../Components/Alert/Alert'
-import Button from '../../components/Form/Button/Button'
+import Button from '../../Components/Form/Button/Button'
 import useConfirmModal from '../../hooks/useConfirmModal'
 import useToast from '../../hooks/useToast'
+import useDeleteItem from '../../hooks/useDeleteItem'
+import usePagination from '../../hooks/usePagination'
+import Paginator from '../../Components/Paginator/Paginator'
 import './ManageArticles.scss'
+
 export default function ManageArticles() {
-    const { showConfirmModal: showDeleteModal, hideConfirmModal: hideDeleteModal, ConfirmModalComponent: DeleteModalComponent } = useConfirmModal()
+    const [page, setPage] = useState(1)
+    const [articleId, setArticleId] = useState(0)
     const { showToast, ToastComponent } = useToast()
 
-    const [articles, setArticles] = useState([])
-    const [articleId, setArticleId] = useState(0)
+    const { showConfirmModal: showDeleteModal, hideConfirmModal: hideDeleteModal, ConfirmModalComponent: DeleteModalComponent } = useConfirmModal()
+    const { data: articles, isPreviousData, totalPage, computedIndex } = usePagination('Articles', getPaginatedArticles, page)
 
-    const getArticle = async () => {
-        const response = await getArticles()
-        setArticles(response)
-    }
-    const removeArticle = async () => {
+    const { mutate: removeArticle } = useDeleteItem(async () => {
         const deleteResponse = await deleteArticle(articleId)
+        hideDeleteModal()
         switch (deleteResponse.status) {
             case 200:
                 showToast('success', deleteResponse.message)
-                hideDeleteModal()
-                getArticle()
-                break;
+                return deleteResponse;
             default:
                 showToast('error', deleteResponse.message)
-                break;
+                return Promise.reject(deleteResponse.message)
         }
-    }
-    useEffect(() => {
-        getArticle()
-    }, [])
+    }, ["Articles", page], articleId)
 
     return (
         <>
-            {DeleteModalComponent('delete', removeArticle)}
-            {ToastComponent()}
             <BreadCrump />
             <div className="manage-articles-container">
                 {
-                    articles.length > 0 ? (
+                    articles?.length > 0 ? (
                         <>
                             <SectionHeader title='articles Table' />
                             <Table>
@@ -58,9 +53,9 @@ export default function ManageArticles() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {articles.map((article, index) => {
+                                    {articles?.map((article, index) => {
                                         return <tr key={article.id}>
-                                            <td>{index + 1}</td>
+                                            <td>{computedIndex + index}</td>
                                             <td>
                                                 <img src={article.articleCover} />
                                             </td>
@@ -83,8 +78,16 @@ export default function ManageArticles() {
                     ) :
                         <Alert message='there is no article yet!' />
                 }
+                <Paginator
+                    page={page}
+                    setPage={setPage}
+                    isPreviousData={isPreviousData}
+                    totalPage={totalPage}
+                    data={articles} />
             </div>
 
+            {ToastComponent()}
+            {DeleteModalComponent('delete', removeArticle)}
         </>
     )
 }

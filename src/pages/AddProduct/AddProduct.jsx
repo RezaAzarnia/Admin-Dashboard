@@ -1,19 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Form, Formik } from 'formik';
 import { addProduct } from '../../services/Axios/Requests/products';
-import { getCategory } from '../../services/Axios/Requests/category';
+import { getAllCategory } from '../../services/Axios/Requests/category';
 import BreadCrump from '../../Components/BreadCrump/BreadCrump'
-import Input from '../../Components/Form/Input/Input'
+import Input from '../../components/Form/Input/Input'
 import UploadButton from '../../Components/Form/UploadButton/UploadButton'
 import Button from '../../Components/Form/Button/Button';
 import SectionHeader from '../../Components/SectionHeader/SectionHeader';
 import useToast from '../../hooks/useToast'
+import useFetchItem from '../../hooks/useFetchItem';
+import useItemMutation from '../../hooks/useItemMutation';
 import './AddProduct.scss'
+
 export default function AddProduct() {
-    const [category, setCategory] = useState([])
     const [productCover, setProductCover] = useState('')
     const [coverErrors, setCoverErrors] = useState('')
     const { showToast, ToastComponent } = useToast()
+    const { data: category } = useFetchItem('Categories', getAllCategory)
+    const resetFormRef = useRef()
+
     const initialValues = {
         productTitle: '',
         productPrice: '',
@@ -22,13 +27,6 @@ export default function AddProduct() {
         productDescription: '',
         productCover,
     }
-    useEffect(() => {
-        const getCategories = async () => {
-            const response = await getCategory()
-            setCategory(response)
-        }
-        getCategories()
-    }, [])
     useEffect(() => {
         if (coverErrors.length > 0) {
             showToast('error', coverErrors)
@@ -71,42 +69,44 @@ export default function AddProduct() {
         }
         if (!data.productCover) {
             errors.push('please upload product cover!')
+            console.log('error cover')
         }
         return errors;
 
     }
-
-    const handleSubmit = async (values, { resetForm }) => {
+    const { mutate: handleSubmit } = useItemMutation(async (values) => {
         const productErrors = validateProductsForm(values)
         if (productErrors.length > 0) {
             showToast('error', productErrors.map((item, index) => <p key={index + 1}>{item}</p>))
-            return
+
+            return Promise.reject(productErrors[0])
         }
+        // numbering the category id
         values['categoryId'] = Number(values.categoryId)
 
-        const response = await addProduct({
-            ...values,
-        })
+        const response = await addProduct({ ...values })
 
         switch (response.status) {
             case 200:
                 showToast('success', response.message)
-                resetForm()
                 setProductCover('')
-                break
+                resetFormRef.current()
+                return response
             default:
                 showToast('error', response.message)
-                break
+                return Promise.reject(response.message)
         }
-    }
-
+    }, "Products")
     return (
         <>
             {ToastComponent()}
             <BreadCrump />
             <Formik
                 initialValues={initialValues}
-                onSubmit={handleSubmit}
+                onSubmit={(values, { resetForm }) => {
+                    resetFormRef.current = resetForm;
+                    handleSubmit(values)
+                }}
             >
                 <Form>
                     <div className="add-product-container">
@@ -131,8 +131,9 @@ export default function AddProduct() {
                                 >
                                     <option value='-1'>select product category</option>
                                     {
-                                        category.length > 0 &&
+                                        category?.length > 0 &&
                                         category?.map(item => {
+                                            console.log(item)
                                             return <option value={Number(item.id)} key={item.id}>{item.categoryName}</option>
                                         })
                                     }
@@ -171,7 +172,11 @@ export default function AddProduct() {
                         </div>
                         <div className="add-product-buttons">
                             <Button title='save product' mode='success' type='submit' />
-                            <Button title='cancel' mode='warning' type='button' />
+                            <Button title='cancel' mode='warning' type='button' onclick={() => {
+                                //clear inputs and cover in cancel mode
+                                resetFormRef.current();
+                                setProductCover('')
+                            }} />
                         </div>
                     </div>
                 </Form>

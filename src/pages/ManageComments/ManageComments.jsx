@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { acceptCommentById, anwserComment, deleteComment, getComments, rejectCommentById } from '../../services/Axios/Requests/comments'
 import Button from '../../Components/Form/Button/Button'
-import Input from '../../Components/Form/Input/Input';
+import Input from '../../components/Form/Input/Input';
 import Table from '../../Components/Table/Table'
 import BreadCrump from '../../Components/BreadCrump/BreadCrump'
 import Modal from '../../Components/Modals/Modal/Modal'
@@ -10,10 +10,16 @@ import useToast from '../../hooks/useToast'
 import useConfirmModal from '../../hooks/useConfirmModal'
 import Alert from '../../Components/Alert/Alert'
 import RateShow from '../../Components/RateShow/RateShow'
+import useDeleteItem from '../../hooks/useDeleteItem';
+import useItemMutation from '../../hooks/useItemMutation';
+import usePagination from '../../hooks/usePagination';
+import Paginator from '../../Components/Paginator/Paginator';
 import './ManageComments.scss'
 
 export default function ManageComments() {
-    const [comments, setComments] = useState([])
+    const [page, setPage] = useState(1)
+    const { data: comments, isPreviousData, totalPage, computedIndex } = usePagination('Comments', getComments, page)
+    const { showToast, ToastComponent } = useToast()
     const [commentInfo, setCommentInfo] = useState({})
     const [commentId, setCommentId] = useState(0)
     const [isShowCommentBody, setIsShowCommentBody] = useState(false)
@@ -21,83 +27,70 @@ export default function ManageComments() {
     const { showConfirmModal: showDeleteModal, hideConfirmModal: hideDeleteModal, ConfirmModalComponent: DeleteModalComponent } = useConfirmModal()
     const { showConfirmModal: showAccepetModal, hideConfirmModal: hideAcceptModal, ConfirmModalComponent: AcceptCommentComponent } = useConfirmModal()
     const { showConfirmModal: showRejectModal, hideConfirmModal: hideRejectModal, ConfirmModalComponent: RejectCommentComponent } = useConfirmModal()
-    const { showToast, ToastComponent } = useToast()
 
-    const getComment = async () => {
-        const response = await getComments()
-        setComments(response)
-    }
-    const removeComment = async () => {
-        const deleteResponse = await deleteComment(commentId)
-        switch (deleteResponse.status) {
+    const { mutate: removeComment } = useDeleteItem(async () => {
+        const deleteCommentResponse = await deleteComment(commentId)
+        hideDeleteModal()
+        switch (deleteCommentResponse.status) {
             case 200:
-                showToast('success', deleteResponse.message)
-                hideDeleteModal()
-                getComment()
-                break
+                showToast('success', deleteCommentResponse.message)
+                return deleteCommentResponse;
             default:
-                showToast('error', deleteResponse.message)
-                break
+                showToast('error', deleteCommentResponse.message)
+                return Promise.reject(deleteCommentResponse.message)
         }
-    }
-    const anwserToComment = async (values) => {
+    }, 'Comments', commentId)
+    const { mutate: anwserToComment } = useItemMutation(async (values) => {
         const errors = [];
         if (!values.anwser) {
             errors.push('please enter the anwser for comment')
         }
         if (errors.length > 0) {
             showToast('error', errors[0])
-            return
+            return Promise.reject(errors[0])
         }
         const anwserResponse = await anwserComment(commentId, values.anwser)
+        setIsShowAnswerModal(false)
         switch (anwserResponse.status) {
             case 200:
                 showToast('success', anwserResponse.message)
-                setIsShowAnswerModal(false)
-                getComment()
                 break
             default:
                 showToast('error', anwserResponse.message)
-                break
+                return Promise.reject(anwserResponse.message)
         }
-    }
-    const rejectComment = async () => {
-        const rejectResponse = await rejectCommentById(commentId)
-        switch (rejectResponse.status) {
+    }, "Comments")
+    const { mutate: rejectComment } = useItemMutation(async () => {
+        const rejectCommentResponse = await rejectCommentById(commentId)
+        hideRejectModal()
+        switch (rejectCommentResponse.status) {
             case 200:
-                showToast('success', rejectResponse.message)
-                hideRejectModal()
-                getComment()
-                break
+                showToast('success', rejectCommentResponse.message)
+                return rejectCommentResponse
             default:
-                showToast('error', rejectResponse.message)
-                break
+                showToast('error', rejectCommentResponse.message)
+                return Promise.reject(rejectCommentResponse.message)
         }
-    }
-    const acceptComment = async () => {
-        const acceptResponse = await acceptCommentById(commentId)
-        switch (acceptResponse.status) {
-            case 200:
-                showToast('success', acceptResponse.message)
-                hideRejectModal()
-                getComment()
-                break
-            default:
-                showToast('error', acceptResponse.message)
-                break
-        }
+    }, 'Comments')
+    const { mutate: acceptComment } = useItemMutation(async () => {
+        const acceptCommentResponse = await acceptCommentById(commentId)
         hideAcceptModal()
-    }
-    useEffect(() => {
-        getComment()
-    }, [])
+        switch (acceptCommentResponse.status) {
+            case 200:
+                showToast('success', acceptCommentResponse.message)
+                return acceptCommentResponse
+            default:
+                showToast('error', acceptCommentResponse.message)
+                return Promise.reject(acceptCommentResponse.message)
+        }
+    }, 'Comments')
+
     return (
         <>
-            {ToastComponent()}
             <BreadCrump />
             <div className="comments-container">
                 {
-                    comments.length > 0 ?
+                    comments?.length > 0 ?
                         <Table>
                             <thead>
                                 <tr>
@@ -114,8 +107,7 @@ export default function ManageComments() {
                             </thead>
                             <tbody>
                                 {
-                                    comments.length > 0 &&
-                                    comments.map((comment, index) => {
+                                    comments?.map((comment, index) => {
                                         return <tr key={comment.id}>
                                             <td className={comment.anwser ? 'hasAnwser' : 'hasNoAnwser'}>{index + 1}</td>
                                             <td>{comment.userInfo.userName}</td>
@@ -123,7 +115,7 @@ export default function ManageComments() {
                                             <td>
                                                 <RateShow rate={comment.rate} />
                                             </td>
-                                            <td>2023/5/14</td>
+                                            <td>{comment.date}</td>
 
                                             <td>
                                                 <Button title='seeComment' mode='success' onclick={() => {
@@ -169,9 +161,15 @@ export default function ManageComments() {
                         </Table>
                         : <Alert message='No comments available.' />
                 }
-
+                <Paginator
+                    page={page}
+                    setPage={setPage}
+                    isPreviousData={isPreviousData}
+                    totalPage={totalPage}
+                    data={comments} />
             </div >
             {/* start comments actions */}
+            {ToastComponent()}
             {AcceptCommentComponent('accept', acceptComment)}
             {RejectCommentComponent('reject', rejectComment)}
             {DeleteModalComponent('delete', removeComment)}

@@ -6,11 +6,9 @@ import { SidebarProvider } from './context/SidebarContext.jsx';
 export default function App() {
   const router = useRoutes(routes)
   return (
-    <>
       <SidebarProvider>
         {router}
       </SidebarProvider>
-    </>
   )
 }
 

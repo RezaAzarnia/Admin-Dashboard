@@ -4,8 +4,8 @@ import { IoIosSearch } from "react-icons/io";
 import { IoSettingsSharp } from "react-icons/io5";
 import { BsFillGrid3X3GapFill, BsThreeDotsVertical } from "react-icons/bs";
 import { FaBell } from "react-icons/fa";
-import ProfileSettingMenu from '../ProfileSettingMenu/ProfileSettingMenu';
 import NotificationsBox from '../NotificationsBox/NotificationsBox';
+import ProfileSettingMenu from '../ProfileSettingMenu/ProfileSettingMenu';
 import IconMenu from '../IconMenu/IconMenu';
 import { useSidebarContext } from '../../context/SidebarContext';
 import './Navbar.scss'

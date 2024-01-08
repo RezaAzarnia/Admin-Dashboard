@@ -21,7 +21,19 @@ export default function TextEditor({ name }) {
     }
     return (
         <Field name={name}>
-            {({ field }) => <ReactQuill value={field.value} onChange={field.onChange(field.name)} modules={modules} />}
+            {({ field, form }) => {
+                const handleQuillChange = (content) => {
+                    const isEmptyParagraph = content === '<p><br></p>';
+                    form.setFieldValue(name, isEmptyParagraph ? '' : content);
+                };
+                return (
+                    <ReactQuill
+                        value={field.value}
+                        onChange={handleQuillChange}
+                        modules={modules}
+                    />
+                );
+            }}
         </Field>
     )
 }

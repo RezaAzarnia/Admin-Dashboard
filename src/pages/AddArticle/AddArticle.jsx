@@ -1,39 +1,37 @@
-import React, { useEffect, useState } from 'react'
-import Input from '../../Components/Form/Input/Input';
+import React, { useEffect, useRef, useState } from 'react'
+import { Form, Formik } from 'formik';
+import { addArticle } from '../../services/Axios/Requests/articles';
+import Input from '../../components/Form/Input/Input';
 import BreadCrump from '../../Components/BreadCrump/BreadCrump';
 import TextEditor from '../../Components/Form/TextEditor';
 import SectionHeader from '../../Components/SectionHeader/SectionHeader';
 import UploadButton from '../../Components/Form/UploadButton/UploadButton';
 import Button from '../../Components/Form/Button/Button';
-import Toast from '../../Components/Toast/Toast'
-import { Form, Formik } from 'formik';
-import { addArticle } from '../../services/Axios/Requests/articles';
+import useToast from '../../hooks/useToast';
+import useItemMutation from '../../hooks/useItemMutation';
 import './AddArticle.scss'
 
 export default function AddArtice() {
+    const { showToast, ToastComponent } = useToast()
     const [articleCover, setArticleCover] = useState('')
     const [coverErrors, setCoverErrors] = useState('')
-    const [toastItems, setToastItems] = useState({})
-    const [isShowToast, setIsShowToast] = useState(false)
-    const initialValuee = {
+    const resetFormRef = useRef()
+
+    const initialValue = {
         articleTitle: '',
         articleCover,
         articleBody: ''
     }
     useEffect(() => {
         if (coverErrors.length > 0) {
-            setIsShowToast(true)
-            setToastItems({
-                mode: 'error',
-                title: coverErrors
-            })
+            showToast('error', coverErrors)
         }
         setCoverErrors('')
     }, [coverErrors])
 
     const valdateArticleForm = (data) => {
         let errors = []
-        if (!data.articleTitle.trim()) {
+        if (!data.articleTitle) {
             errors.push('please enter article title')
         }
         if (!data.articleBody.trim()) {
@@ -44,48 +42,38 @@ export default function AddArtice() {
         }
         return errors;
     }
-    const handleSubmit = async (values, { resetForm }) => {
+    const { mutate: createArticle } = useItemMutation(async (values) => {
         const articleErrors = valdateArticleForm(values)
-
         if (articleErrors.length > 0) {
-            setIsShowToast(true)
-            setToastItems({
-                mode: 'error',
-                title: articleErrors.map((item, index) => <p key={index + 1}>{item}</p>)
-            })
-            return
+            showToast('error', articleErrors.map((item, index) => <p key={index + 1}>{item}</p>))
+            return Promise.reject(articleErrors[0])
         }
-        const trimedArticleData = Object.fromEntries(Object.entries(values).map(([key, value]) => [key, value.trim()]))
-        const response = await addArticle({ ...trimedArticleData })
+        const createArticleResponse = await addArticle({ ...values })
 
-        setIsShowToast(true)
-        switch (response.status) {
+        switch (createArticleResponse.status) {
             case 200:
-                setToastItems({
-                    mode: 'success',
-                    title: response.message
-                })
-                resetForm()
+                showToast('success', createArticleResponse.message)
+                resetFormRef.current()
                 setArticleCover('')
-                break
+                return createArticleResponse
             default:
-                setToastItems({
-                    mode: 'error',
-                    title: response.message
-                })
-                break
+                showToast('error', createArticleResponse.message)
+                return Promise.reject(createArticleResponse.message)
         }
-    }
+    }, 'Articles')
     return (
         <>
-            {isShowToast && <Toast {...toastItems} isShowToast={isShowToast} setIsShowToast={setIsShowToast} />}
+            {ToastComponent()}
             <BreadCrump />
             <div className="addAticle-container">
                 <SectionHeader title='add article' />
                 <div className="add-article-part">
                     <Formik
-                        initialValues={initialValuee}
-                        onSubmit={handleSubmit}
+                        initialValues={initialValue}
+                        onSubmit={(values, { resetForm }) => {
+                            resetFormRef.current = resetForm;
+                            createArticle(values)
+                        }}
                     >
                         <Form>
                             <div className="row-add-article">
@@ -119,7 +107,7 @@ export default function AddArtice() {
                             </div>
                             <div className="add-article-buttons">
                                 <Button title='save article' mode='success' type='submit' />
-                                <Button title='cancel' mode='warning' />
+                                <Button title='cancel' mode='warning' type='button' />
                             </div>
                         </Form>
                     </Formik>

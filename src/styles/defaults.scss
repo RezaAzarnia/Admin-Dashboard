@@ -3,31 +3,7 @@ html {
   font-family: var(--primary-font);
   scroll-behavior: smooth;
 }
-*,
-*::after,
-*::before {
-  outline: none;
-  box-sizing: inherit;
-  font-family: var(--primary-font);
-}
-body {
-  background-color: var(--body-color);
-}
-::-webkit-scrollbar {
-  width: 10px;
-}
 
-::-webkit-scrollbar-track {
-  background: var(--light-gray);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--gray);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--dark-gray);
-}
 h1 {
   font-size: 2em;
 }
@@ -72,13 +48,4 @@ h6 {
 }
 .bg-warning {
   background-color: var(--dark-warning) !important;
-}
-.error {
-  color: var(--danger);
-}
-.success {
-  color: var(--green);
-}
-.warning {
-  color: var(--warning);
 }

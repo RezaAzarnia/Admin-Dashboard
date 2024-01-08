@@ -1,13 +1,21 @@
-import { baseURL, handleResponse, initialDate, sanitizeData } from "../configs/Configs";
+import {
+  baseURL,
+  handleResponse,
+  handleService,
+  initialDate,
+  sanitizeData,
+} from "../configs/Configs";
 
-const getArticles = async () => {
-  try {
-    const response = await baseURL.get("/articles");
-    return response.data || [];
-  } catch (error) {
-    return [];
-  }
+const articleService = {
+  getAllArticles: async () => {
+    const response = await handleService(baseURL.get("/articles"));
+    return response.data;
+  },
+  getPaginatedArticles: async (page = 1, limit = 5) => {
+    return await handleService(`/articles?_page=${page}&&_limit=${limit}`);
+  },
 };
+
 const getSingleArticle = async (articleId) => {
   try {
     const response = await baseURL.get(`/articles/${articleId}`);
@@ -16,27 +24,15 @@ const getSingleArticle = async (articleId) => {
     return error;
   }
 };
-const checkExistArticle = async (newArticle) => {
-  const articles = await getArticles();
-  const isArticleExist = articles?.some(
-    (article) => article.articleTitle === newArticle.articleTitle
-  );
-  if (isArticleExist) {
-    throw {
-      status: 409,
-      message: "This article title is already registered.",
-    };
-  }
-};
+
 const addArticle = async (articleData) => {
   const sanitizeCategoryData = sanitizeData(articleData);
 
   try {
-    await checkExistArticle(articleData);
     const response = await baseURL.post("/articles", {
       ...sanitizeCategoryData,
       publishedDate: initialDate(),
-      author:'Reza Azarnia'
+      author: "Reza Azarnia",
     });
     return handleResponse(response, "article added succesfully");
   } catch (error) {
@@ -52,4 +48,4 @@ const deleteArticle = async (articleID) => {
   }
 };
 
-export { addArticle, getArticles, deleteArticle, getSingleArticle };
+export { addArticle, articleService, deleteArticle, getSingleArticle };

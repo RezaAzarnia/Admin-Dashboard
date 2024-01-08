@@ -7,7 +7,7 @@ export default function DetailBox({ title, symbol, count }) {
         if (counter < count) {
             const counterInterval = setInterval(() => {
                 setCounter(prev => prev + 1)
-            }, 1);
+            }, 50);
 
             return () => clearInterval(counterInterval)
         } else {

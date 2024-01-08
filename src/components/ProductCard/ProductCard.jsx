@@ -27,7 +27,7 @@ export default function ProductCard({ id, productTitle, productPrice, productDis
                                         <span className='product-price'>
                                             ${(productPrice - (productPrice / 100) * productDiscount).toFixed(2)}
                                         </span>
-                                        <span className='badge bg-error'>{productDiscount}%</span>
+                                        <span className='badge bg-danger'>{productDiscount}%</span>
                                     </div>
                                     <p className='price-before-discount-Value'>
                                         ${fixedProoductPrice}
