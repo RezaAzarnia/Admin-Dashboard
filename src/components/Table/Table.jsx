@@ -1,9 +1,18 @@
 import React from 'react'
 import './Table.scss'
-export default function Table({ children }) {
+
+import SkeletonTable from '../SkeletonLoader/SkeletonTable/SkeletonTable'
+export default function Table({ isLoading, children }) {
+
     return (
-        <table>
-            {children}
-        </table>
+        <div className="table-container" >
+            {
+                isLoading ?
+                    <SkeletonTable />
+                    : <table>
+                        {children}
+                    </table>
+            }
+        </div>
     )
 }

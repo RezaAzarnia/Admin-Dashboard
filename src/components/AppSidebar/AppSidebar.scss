@@ -1,66 +1,61 @@
 .main-sidebar {
-  position: fixed;
-  top: 68px;
-  width: 220px;
-  height: 100vh;
-  z-index: 999;
+  @include fix-position($top: 63px, $left: 250px);
+  @include size(250px, 100vh);
   background-color: var(--dark-blue);
-  transition: 0.4s ease;
+  margin-left: -250px;
+  transition: all 0.5s ease;
+  overflow-y: auto;
+  z-index: 999;
 }
 
 .main-sidebar.close {
-  width: 48px;
-  span {
-    opacity: 0;
-  }
+  width: 45px;
 }
 .main-sidebar.close {
   &:hover {
-    width: 220px !important;
-    span {
-      opacity: 1;
-    }
-    .sidebar-icon-header{
-      width: 10% * 2;
-    }
+    width: 250px !important;
   }
 }
+
 .sidebar-section {
+  width: 250px;
   margin: 10px 0;
-  border-bottom: 1px solid gray;
+  border-bottom: 1px solid var(--gray);
   &:last-child {
     border-bottom: none;
   }
   .sidebar-list {
-    display: flex;
-    flex-direction: column;
+    @include flex($direction: column);
     padding: 5px 0;
   }
 }
 .sidebar-section-header {
   padding: 7px;
-  text-transform: uppercase;
-  font-size: 0.69rem;
-  color: var(--gray);
+  @include text-format(
+    $font-size: 0.69rem,
+    $color: var(--gray),
+    $transform: uppercase
+  );
 }
-.sidebar-icon-header{
-  width: 100%;
-  margin: 0 -7px;
+.sidebar-icon-header {
   color: var(--body-color);
+  margin-left: 12px;
 }
 .sidebar-item {
-  text-transform: capitalize;
-  font-size: 0.85rem;
-  color: var(--white);
+  @include text-format(
+    $font-size: 0.85rem,
+    $color: var(--white),
+    $transform: capitalize
+  );
   cursor: pointer;
-  height: 40px;
+  line-height: 2.4;
   .sidebar-link {
-    padding: 10px 10px 0;
-    text-decoration: none;
+    @include size(100%);
     color: inherit;
+    padding: 5px 0;
+    text-decoration: none;
     display: inline-block;
-    width: 100%;
-    height: 100%;
+    text-indent: 13px;
   }
   &:hover {
     background-color: rgba(197, 192, 192, 0.089);
@@ -72,4 +67,11 @@
 }
 .sidebar-link.active {
   color: var(--green);
+}
+
+@include breakpoint("small-to-medium-screen") {
+  .main-sidebar.close {
+    left: -65px;
+    width: 0px;
+  }
 }

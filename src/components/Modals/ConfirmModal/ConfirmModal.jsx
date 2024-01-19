@@ -44,7 +44,8 @@ export default function ConfirmModal({ action, isOpen, onCancel, onConfirm, isLo
                     </span>
                 </div>
                 <div className="confirm-modal-button">
-                    <Button title='cancel' onclick={() => !isLoading && onCancel()} />
+                    <Button title='cancel' type='button'
+                        onclick={() => !isLoading && onCancel()} />
                     <Button
                         isLoading={isLoading}
                         title={confirmLabel}

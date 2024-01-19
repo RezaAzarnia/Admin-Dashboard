@@ -3,9 +3,11 @@ import { IoMdStar } from "react-icons/io";
 import { Link } from 'react-router-dom';
 import './ProductCard.scss'
 
-export default function ProductCard({ id, productTitle, productPrice, productDiscount, category, productDescription, productCover }) {
+export default function ProductCard({ id, productTitle, productPrice, productDiscount, category, productDescription, productCover, isLoading }) {
     const fixedProoductPrice = Number(productPrice).toFixed(2)
+
     return (
+
         <div className="product-card">
             <Link to={`/Products/${id}`} className='product-card-link'>
                 <div className="image-part">
@@ -43,6 +45,5 @@ export default function ProductCard({ id, productTitle, productPrice, productDis
                 </div>
             </Link >
         </div >
-
     )
 }

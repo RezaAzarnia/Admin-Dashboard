@@ -4,12 +4,12 @@ import { useSidebarContext } from '../../context/SidebarContext';
 import { HiDotsHorizontal } from "react-icons/hi";
 import { FaPlus, FaTrash, FaMinus } from 'react-icons/fa6';
 import { Formik, Form } from 'formik';
-import Input from '../Form/Input/Input'
-import Button from '../../components/Form/Button/Button';
+import Input from '../Form/Input/Input';
+import Button from '../../Components/Form/Button/Button';
 import useFetchItem from '../../hooks/useFetchItem';
 import useItemMutation from '../../hooks/useItemMutation';
-import useDeleteItem from '../../hooks/useDeleteItem';
 import './TaskSidebar.scss';
+import { useMutation, useQueryClient } from 'react-query';
 
 
 function TaskSidebar() {
@@ -46,21 +46,29 @@ function TaskSidebar() {
         return await createTodo(values.todo)
     }, 'Todos')
 
-    const { mutate: removeTodo } = useDeleteItem(async () => {
+    const queryClient = useQueryClient()
+    const { mutate: removeTodo } = useMutation(async () => {
         return await deleteTodo(todoId)
-    }, 'Todos', todoId)
+    }, {
+        onSuccess: () => {
+            const oldValue = queryClient.getQueryData('Todos')
+            const newValues = oldValue.filter(item => item.id !== +todoId)
+            queryClient.setQueryData('Todos', newValues)
+        }
+    })
 
     //remove item by change todoId
     useEffect(() => {
-        if (!initialLoad) {
-            removeTodo()
+        if (todoId !== 0 && !initialLoad) {
+            removeTodo(todoId)
+            setTodoId(0)
         }
     }, [todoId])
     useEffect(() => {
         if (initialLoad) {
             setInitialLoad(false)
         }
-    }, [])
+    }, [initialLoad])
 
     const { mutate: handleIsDoneTodo } = useItemMutation(async (updatedTodo) => {
         return await changeTodoStatus(updatedTodo.id, updatedTodo.isDone);
@@ -100,7 +108,7 @@ function TaskSidebar() {
                                 </div>
                                 <ul className='chat-list'>
                                     <li className='chat-list-item'>
-                                        <img src="images/profile.png" alt="" />
+                                        <img src="images/profile.jpg" alt="" />
                                         <div className="chat-info">
                                             <p className='user-name'>rayan</p>
                                             <span className='chat-text'>hello i was windering if you could talk to me ?!</span>

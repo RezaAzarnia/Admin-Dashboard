@@ -1,27 +1,27 @@
 import {
   baseURL,
   handleResponse,
-  handleService,
   initialDate,
   sanitizeData,
 } from "../configs/Configs";
 
-const articleService = {
-  getAllArticles: async () => {
-    const response = await handleService(baseURL.get("/articles"));
-    return response.data;
-  },
-  getPaginatedArticles: async (page = 1, limit = 5) => {
-    return await handleService(`/articles?_page=${page}&&_limit=${limit}`);
-  },
+const getArticles = async (page = 1, limit = 5) => {
+  try {
+    const response = await baseURL.get(
+      `/articles?_page=${page}&&_limit=${limit}`
+    );
+    const articlesLength = response.headers.get("X-Total-Count") || 0;
+    return { data: response?.data, length: articlesLength };
+  } catch (error) {
+    throw error;
+  }
 };
-
 const getSingleArticle = async (articleId) => {
   try {
     const response = await baseURL.get(`/articles/${articleId}`);
     return response.data;
   } catch (error) {
-    return error;
+        throw error;
   }
 };
 
@@ -36,7 +36,7 @@ const addArticle = async (articleData) => {
     });
     return handleResponse(response, "article added succesfully");
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 const deleteArticle = async (articleID) => {
@@ -44,8 +44,8 @@ const deleteArticle = async (articleID) => {
     const response = await baseURL.delete(`/articles/${articleID}`);
     return handleResponse(response, "article deleted succesfully");
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 
-export { addArticle, articleService, deleteArticle, getSingleArticle };
+export { addArticle, getArticles, deleteArticle, getSingleArticle };

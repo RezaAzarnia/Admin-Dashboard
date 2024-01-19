@@ -1,36 +1,31 @@
 .profile-setting-dropdown {
-  position: absolute;
-  top: 59px;
-  right: 5px;
-  width: 173px;
+  @include absolute-position($top: 54px, $right: 5px);
+  @include box-shadow(1px, 1px, 4px, 0, rgba(0, 0, 0, 0.4705882353));
   background-color: var(--white);
+  width: 173px;
   padding: 5px 0;
-  box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.4705882353);
-  transform: rotateX(90deg);
   opacity: 0;
+  transform: rotateX(90deg);
   transition: all 0.3s ease;
   .profile-setting-list {
-    width: 100%;
-    height: 100%;
+    @include size(100%);
     background: var(--white);
   }
 }
 .profile-setting-list > .setting-list-item {
+  @include text-format($font-size: 0.875rem, $transform: capitalize);
   padding: 6px 15px;
   vertical-align: middle;
-  font-size: 0.875rem;
-  text-transform: capitalize;
   z-index: 9999;
   transition: all 0.3s ease-in-out;
   cursor: pointer;
-  &:hover{
+  &:hover {
     background-color: var(--light-gray);
   }
-
 }
 .divider {
   margin: 2px 0;
-  border: 0.2px solid #7d7c7c3d;
+  border: 0.2px solid var(--light-gray);
 }
 .activate-item {
   padding: 10px 15px !important;

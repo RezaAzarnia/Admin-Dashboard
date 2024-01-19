@@ -1,23 +1,23 @@
 .notification-dropdown {
-  position: absolute;
-  background: var(--white);
-  top: 46px;
+  @include absolute-position($top: 43px, $right: -6px);
+  @include box-shadow(0px, 3px, 4px, var(--gray));
   width: 400px;
-  right: -6px;
+  background: var(--white);
   transform: scale(0);
   transition: all 0.2s ease-in-out;
   .notification-header {
+    @include flex($justify: space-between);
     padding: 14px 10px;
-    display: flex;
-    justify-content: space-between;
     border-bottom: 1px solid;
     h4 {
       text-transform: capitalize;
     }
     span.clearBtn {
-      color: var(--danger);
-      font-size: 0.8rem;
-      text-transform: uppercase;
+      @include text-format(
+        $font-size: 0.8rem,
+        $color: var(--danger),
+        $transform: capitalize
+      );
       cursor: pointer;
     }
   }
@@ -26,9 +26,7 @@
 .notification-body {
   padding: 8px 10px;
   .notification-list-item {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    @include flex($justify: space-between);
     padding: 10px 0px;
     cursor: pointer;
     border-bottom: 1px solid var(--light-gray);
@@ -36,32 +34,36 @@
       border-bottom: none;
     }
     .text-part {
-      display: flex;
+      @include flex($align: center);
       gap: 10px;
-      align-items: center;
     }
   }
 }
 
 .notif-text {
+  @include text-format($font-size: 0.8rem, $transform: capitalize);
   margin-bottom: 5px;
-  text-transform: capitalize;
-  font-size: 0.8rem;
 }
 .notif-icon {
   padding: 8px 11px;
   background-color: var(--green);
-  .message-icon{
-    color: var(--white);
-    font-size: 1.2rem;
+
+  .message-icon {
+    @include text-format($font-size: 1.2rem, $color: var(--white));
   }
 }
 
 .notif-time {
-  color: var(--dark-gray);
-  font-size: 0.8rem;
+  @include text-format($font-size: 0.8rem, $color: var(--dark-gray));
 }
 
 .notification-dropdown.active {
   transform: scale(1);
+}
+@include breakpoint("small-screen") {
+  .notification-dropdown {
+    @include fix-position($top: 120px, $right: 0, $left: 0);
+    width: 100%;
+    min-width: auto;
+  }
 }

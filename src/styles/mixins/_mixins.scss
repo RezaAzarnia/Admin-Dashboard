@@ -1,0 +1,88 @@
+// Define mixin for small screens
+@mixin size($width, $height: $width) {
+  width: $width;
+  height: $height;
+}
+
+@mixin box-shadow($x, $y, $blur, $spread: 0, $color: null) {
+  box-shadow: $x $y $blur $spread $color;
+}
+
+@mixin text-format($font-size: null, $color: null, $transform: null) {
+  font-size: $font-size;
+  color: $color;
+  text-transform: $transform;
+}
+
+@mixin flex($direction: null, $justify: null, $align: null) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+@mixin grid-container($columns: auto, $gap: null) {
+  display: grid;
+  grid-template-columns: repeat($columns, 1fr);
+
+  gap: $gap;
+}
+
+@mixin relative-position {
+  position: relative;
+}
+
+@mixin absolute-position($top: null, $right: null, $bottom: null, $left: null) {
+  position: absolute;
+  top: $top;
+  right: $right;
+  bottom: $bottom;
+  left: $left;
+}
+
+@mixin fix-position($top: null, $right: null, $bottom: null, $left: null) {
+  position: fixed;
+  top: $top;
+  right: $right;
+  bottom: $bottom;
+  left: $left;
+}
+
+@mixin fixed-center {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@mixin breakpoint($point) {
+  @if $point == "small-screen" {
+    @media (max-width: 600px) {
+      @content;
+    }
+  } @else if $point == "small-to-medium-screen" {
+    @media only screen and (max-width: 1023px) {
+      @content;
+    }
+  } @else if $point == "medium-screen" {
+    @media only screen and (min-width: 601px) and (max-width: 1023px) {
+      @content;
+    }
+  } @else if $point == "medium-to-large-screen" {
+    @media only screen and (min-width: 601px) and (max-width: 1280px) {
+      @content;
+    }
+  } @else if $point == "large-screen" {
+    @media only screen and (min-width: 1024px) and (max-width: 1280px) {
+      @content;
+    }
+  } @else if $point == "xl-screen" {
+    @media only screen and (min-width: 1280px) and (max-width: 1480px) {
+      @content;
+    }
+  } @else if $point == "xxl-screen" {
+    @media only screen and (min-width: 1440px) {
+      @content;
+    }
+  }
+}

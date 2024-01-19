@@ -9,7 +9,7 @@
   }
 }
 .confirm-modal-button {
-  display: flex;
+  @include flex;
   width: 100%;
   gap: 10px;
 }

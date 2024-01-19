@@ -7,26 +7,22 @@ import {
 
 let sanitizeUserData = {};
 
-const usersService = {
-  getAllUsers: async () => {
-    const response = await baseURL.get(`/users`);
-    return response.data;
-  },
-  getPaginatedUsers: async (page = 1, limit = 5) => {
+const getUsers = async (page = 1, limit = 5) => {
+  try {
     const response = await baseURL.get(`/users?_page=${page}&&_limit=${limit}`);
-    return response;
-  },
+    const usersLength = response.headers.get("X-Total-Count") || 0;
+    return { data: response?.data, length: usersLength };
+  } catch (error) {
+    throw error;
+  }
 };
 const checkExistUser = async (user) => {
-  const users = await getUsers();
-  const isUserExist = users?.some(
+  const users = await baseURL.get("/users");
+  const isUserExist = users?.data.some(
     (oldUsers) => oldUsers.userEmail === user.userEmail
   );
   if (isUserExist) {
-    throw {
-      status: 409,
-      message: "This email is already registered.",
-    };
+    throw "This email is already registered";
   }
 };
 
@@ -41,7 +37,7 @@ const addUser = async (userData) => {
     });
     return handleResponse(response, "user added succesfully");
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 
@@ -57,7 +53,7 @@ const editUser = async (userID, userData, isUserEmailChanged) => {
     });
     return handleResponse(response, "user edited succesfully");
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 
@@ -70,4 +66,4 @@ const deleteUser = async (userID) => {
   }
 };
 
-export { addUser, usersService, editUser, deleteUser };
+export { addUser, getUsers, editUser, deleteUser };

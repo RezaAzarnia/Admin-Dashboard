@@ -1,9 +1,22 @@
 .articles-container {
-  margin: 40px 0;
+  margin: 20px 0;
   .articles-row {
-    display: grid;
+    @include grid-container($columns:2 , $gap:15px);
     grid-auto-rows: 250px;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
+  }
+}
+@include breakpoint("small-screen") {
+  .articles-container {
+    .articles-row {
+      grid-auto-rows: 400px;
+      grid-template-columns: 1fr;
+    }
+  }
+}
+@include breakpoint("medium-screen"){
+  .articles-container {
+    .articles-row {
+      grid-template-columns: 1fr;
+    }
   }
 }

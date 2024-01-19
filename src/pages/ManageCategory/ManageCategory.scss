@@ -1,25 +1,43 @@
 .add-category-container {
   background-color: var(--white);
-  margin: 40px 0;
+  margin: 20px 0;
   padding: 15px;
-  form{
+  form {
     margin-bottom: 20px;
   }
 }
 
 .add-category-container {
   .row-add-category {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    @include grid-container($columns:2 , $gap:15px);
     grid-template-rows: max-content;
-    gap: 15px;
     grid-row-gap: 45px;
     margin: 20px 0;
   }
   .category-table {
     margin: 40px 0 0;
+    overflow: auto;
   }
-  .save-category-btn{
+  .save-category-btn {
     width: 15%;
+  }
+}
+@include breakpoint("small-screen") {
+  .add-category-container {
+    .save-category-btn {
+      width: 100% !important;
+    }
+  }
+}
+@include breakpoint("small-to-medium-screen") {
+  .add-category-container {
+    .row-add-category {
+      grid-template-columns: auto;
+      grid-template-rows: auto;
+      grid-row-gap: 15px;
+    }
+    .save-category-btn {
+      width: 35%;
+    }
   }
 }

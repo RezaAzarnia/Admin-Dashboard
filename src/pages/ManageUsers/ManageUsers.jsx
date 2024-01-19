@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { addUser, deleteUser, editUser, getPaginatedUsers } from '../../services/Axios/Requests/users'
+import { addUser, deleteUser, editUser, getUsers } from '../../services/Axios/Requests/users'
 import { Formik, Form } from 'formik'
 import { FaEyeSlash, FaEye } from "react-icons/fa";
 import BreadCrump from '../../Components/BreadCrump/BreadCrump'
@@ -15,12 +15,14 @@ import useDeleteItem from '../../hooks/useDeleteItem';
 import useItemMutation from '../../hooks/useItemMutation';
 import usePagination from '../../hooks/usePagination';
 import Paginator from '../../Components/Paginator/Paginator';
+import SkeletonTable from '../../Components/SkeletonLoader/SkeletonTable/SkeletonTable';
 import './ManageUsers.scss'
 
 export default function ManageUsers() {
   //define the pagination stuffs
+  const usersLimitPerPage = 5;
   const [page, setPage] = useState(1)
-  const { data: users, totalPage, isPreviousData, computedIndex } = usePagination('Users', getPaginatedUsers, page)
+  const { data: users, totalPage, isPreviousData, computedIndex, isError, error, isLoading } = usePagination('Users', getUsers, page, usersLimitPerPage)
 
   const { showToast, ToastComponent } = useToast()
   const [showPassword, setShowPassword] = useState(false)
@@ -29,15 +31,12 @@ export default function ManageUsers() {
   const [userId, setUserId] = useState(0);
   const { showConfirmModal: showDeleteModal, hideConfirmModal: hideDeleteModal, ConfirmModalComponent: DeleteModalComponent } = useConfirmModal()
   const resetFormRef = useRef();
-
-
   const initialValues = {
     fullName: "",
     userName: "",
     userEmail: "",
     password: ""
   }
-
   const validateUsersForm = (data) => {
     const errors = []
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -52,48 +51,34 @@ export default function ManageUsers() {
     } else if (!emailRegex.test(data.userEmail.trim())) {
       errors.push("Please enter a valid email")
     }
-    if (!data.password.trim()) {
+    if (!data.password) {
       errors.push("Enter user password please!!")
-    } else if (data.password.length < 8) {
+    } else if (!data.password.match(/^(?!.*\s+$).*$/)) {
+      errors.push("Enter valid password!!")
+    }
+    else if (data.password.length < 8) {
       errors.push("password should at least 8 characters")
     }
     return errors
   }
-
-  const { mutate: createUser } = useItemMutation(async (data) => {
+  const { mutate: createUser, isLoading: isCreateUserLoading } = useItemMutation(async (data) => {
     const usersErrors = validateUsersForm(data)
     if (usersErrors.length > 0) {
-      showToast('error', usersErrors.map((item, index) => <p key={index + 1}>{item}</p>))
-      return Promise.reject(usersErrors[0])
+      return Promise.reject(usersErrors)
     }
     const createUserResponse = await addUser({ ...data })
-    switch (createUserResponse.status) {
-      case (200):
-        showToast('success', createUserResponse.message)
-        resetFormRef.current()
-        return createUserResponse;
-      default:
-        showToast('error', createUserResponse.message)
-        return Promise.reject(createUserResponse.message)
+    return createUserResponse;
 
+  }, 'Users',
+    (success) => {
+      showToast('success', success.message)
+      resetFormRef.current()
+    },
+    (error) => {
+      showToast('error', error)
     }
-  }, 'Users')
-
-  const { mutate: removeUser, isLoading: isUserDeleting } = useDeleteItem(async () => {
-    console.log(userId)
-    const deleteUserResponse = await deleteUser(userId)
-    hideDeleteModal()
-    switch (deleteUserResponse.status) {
-      case (200):
-        showToast('success', deleteUserResponse.message)
-        return deleteUserResponse;
-      default:
-        showToast('error', deleteUserResponse.message)
-        return Promise.reject(deleteUserResponse.message)
-    }
-  }, ['Users', page], userId)
-
-  const { mutate: editUserInfo } = useItemMutation(async (values) => {
+  )
+  const { mutate: editUserInfo, isLoading: isEditUserLoading } = useItemMutation(async (values) => {
     const formErros = validateUsersForm(values)
     const isUserValuesChanged = Object.keys(values).some((key) => values[key] !== editUserInitialValue[key]);
 
@@ -102,26 +87,40 @@ export default function ManageUsers() {
 
     if (!isUserValuesChanged) { //check if all inputs values not changed => do nothing 
       setIsShowEditModal(false)
-      return Promise.reject('no change on user')
+      return Promise.reject('')
     }
-
     if (formErros.length > 0) {
-      showToast('error', formErros.map((item, index) => <p key={index + 1}>{item}</p>))
-      return Promise.reject(formErros[0])
+      return Promise.reject(formErros)
     }
     const editResponse = await editUser(userId, { ...values }, isUserEmailChanged)
+    setIsShowEditModal(false)
+    return editResponse
 
-    switch (editResponse.status) {
-      case 200:
-        showToast('success', editResponse.message)
-        setIsShowEditModal(false)
-        return editResponse
-      default:
-        showToast('error', editResponse.message)
-        return Promise.reject(editResponse.message)
+  }, 'Users',
+    (success) => {
+      showToast('success', success.message)
+    },
+    (error) => {
+      showToast('error', error)
+    })
+  const { mutate: removeUser, isLoading: isUserDeleting } = useDeleteItem(async () => {
+    const deleteUserResponse = await deleteUser(userId)
+    return deleteUserResponse;
+  }, ['Users', page], userId, page, setPage, totalPage, usersLimitPerPage,
+    (success) => {
+      showToast('success', success.message)
+      hideDeleteModal()
     }
-  }, 'Users')
+    ,
+    (error) => {
+      showToast('error', error)
+      hideDeleteModal()
+    }
+  )
 
+  if (isError) {
+    return <Alert message={error} />
+  }
   return (
     <>
       <BreadCrump />
@@ -147,60 +146,60 @@ export default function ManageUsers() {
                   </div>
                 </div>
                 <div className="save-user-btn">
-                  <Button title='save user' mode='success' type='submit' />
+                  <Button title='save user' mode='success' type='submit' isLoading={isCreateUserLoading} />
                 </div>
               </div>
             </Form>
           </Formik>
         </div>
         {
-          users?.length > 0 ?
-
-            <div className="users-table">
-              <SectionHeader title='users' />
-              <Table>
-                <thead>
-                  <tr>
-                    <th>index</th>
-                    <th>name</th>
-                    <th>username</th>
-                    <th>email</th>
-                    <th>regitserDate</th>
-                    <th>edit</th>
-                    <th>delete</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    users?.map((user, index) => {
-                      return (
-                        <tr key={user.id}>
-                          <td>{computedIndex + index}</td>
-                          <td>{user.fullName}</td>
-                          <td>{user.userName}</td>
-                          <td>{user.userEmail}</td>
-                          <td>{user.registerDate}</td>
-                          <td>
-                            <Button title='edit' mode='success' onclick={() => {
-                              setIsShowEditModal(true);
-                              setEditUserInitialValue({ ...user })
-                              setUserId(user.id)
-                            }} />
-                          </td>
-                          <td>
-                            <Button title='delete' mode='error' onclick={() => {
-                              showDeleteModal()
-                              setUserId(user.id)
-                            }} />
-                          </td>
-                        </tr>
-                      )
-                    })
-                  }
-                </tbody>
-              </Table>
-            </div>
-            : <Alert message='no users available' />
+          isLoading ? <SkeletonTable /> :
+            users?.length > 0 ?
+              <div className="users-table">
+                <SectionHeader title='users' />
+                <Table>
+                  <thead>
+                    <tr>
+                      <th>index</th>
+                      <th>name</th>
+                      <th>username</th>
+                      <th>email</th>
+                      <th>regitserDate</th>
+                      <th>edit</th>
+                      <th>delete</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {
+                      users?.map((user, index) => {
+                        return (
+                          <tr key={user.id}>
+                            <td>{computedIndex + index}</td>
+                            <td>{user.fullName}</td>
+                            <td>{user.userName}</td>
+                            <td>{user.userEmail}</td>
+                            <td>{user.registerDate}</td>
+                            <td className='table-button'>
+                              <Button title='edit' mode='success' onclick={() => {
+                                setIsShowEditModal(true);
+                                setEditUserInitialValue({ ...user })
+                                setUserId(user.id)
+                              }} />
+                            </td>
+                            <td className='table-button'>
+                              <Button title='delete' mode='error' onclick={() => {
+                                showDeleteModal()
+                                setUserId(user.id)
+                              }} />
+                            </td>
+                          </tr>
+                        )
+                      })
+                    }
+                  </tbody>
+                </Table>
+              </div>
+              : <Alert message='no users available' />
         }
 
         <Paginator
@@ -216,11 +215,12 @@ export default function ManageUsers() {
       {
         isShowEditModal &&
         <EditModal
+          title='edit user'
           isOpen={isShowEditModal}
+          isLoading={isEditUserLoading}
           setIsOpen={setIsShowEditModal}
           onSubmit={editUserInfo}
           initialValues={editUserInitialValue}
-          title='edit user'
         >
           <Input type='text' placeholder='jack' lableTitle='enter user fullName:' name='fullName' />
           <Input type='text' placeholder='jack' lableTitle='enter username' name='userName' />

@@ -1,30 +1,27 @@
 .detail-box {
+  @include flex($align: center, $justify: space-around);
   width: 100%;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
+  background: var(--white);
 }
 .box-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  @include flex($align: center, $direction: column);
   gap: 2px;
   .box-counter {
     font-size: 1.5rem;
     margin-bottom: 5px;
   }
   .box-content {
-    color: var(--gray);
+    @include text-format(
+      $color: var(--gray),
+      $font-size: 0.85rem,
+      $transform: uppercase
+    );
     text-align: center;
-    font-size: 0.85rem;
     vertical-align: middle;
-    text-transform: uppercase;
   }
 }
 .detail-box {
   .symbol-side > svg {
-    font-size: 2rem;
-    color: var(--gray);
+    @include text-format($color: var(--gray), $font-size: 2rem);
   }
 }

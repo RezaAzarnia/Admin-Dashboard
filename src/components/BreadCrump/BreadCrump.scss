@@ -1,18 +1,15 @@
 .section-header-bread-crump {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  .header-title > h3 {
-    text-transform: capitalize;
+  @include flex($justify: space-between, $align: baseline);
+  .bread-crump-title {
+    @include text-format($transform: capitalize);
   }
 }
 
 .breadCrump-list {
-  display: flex;
+  @include flex;
   gap: 5px;
   li.breadCrump-item {
-    text-transform: capitalize;
-    font-size: 0.875rem;
+    @include text-format($font-size: 0.875rem, $transform: capitalize);
     a {
       text-decoration: none;
       color: var(--dark-gray);
@@ -20,5 +17,10 @@
   }
   .breadCrump-item.active {
     color: var(--black);
+  }
+}
+@include breakpoint("small-screen") {
+  .breadCrump-list {
+    display: none;
   }
 }

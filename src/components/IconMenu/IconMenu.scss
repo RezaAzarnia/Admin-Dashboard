@@ -1,17 +1,12 @@
 .icon-menu {
-  position: absolute;
-  top: 45px;
-  right: -410px;
+  @include size(270px, 193px);
+  @include absolute-position($top: 43px, $right: -410px);
+  @include box-shadow(0, 0, 4px, 0, #0000004d);
   opacity: 0;
   background-color: var(--white);
-  height: 193px;
-  width: 270px;
-  box-shadow: 0 0 4px 0 #0000004d;
   transition: all 0.4s ease-in-out;
   .icon-menu-list {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0px;
+    @include grid-container($columns: 3);
     padding: 8px 0;
   }
 }
@@ -20,16 +15,12 @@
   opacity: 1;
 }
 
+$colors: var(--pink), var(--green), var(--primary), var(--danger),
+  var(--warning), var(--gray);
 .icon-menu-list-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  @include flex($direction: column, $align: center);
   gap: 10px;
   padding: 12px;
-
-  $colors: var(--pink), var(--green), var(--primary), var(--danger),
-    var(--warning), var(--gray);
-
   @for $i from 1 through length($colors) {
     &:nth-child(#{$i}) {
       color: nth($colors, $i);
@@ -41,13 +32,15 @@
     font-size: 1.8rem;
   }
   .icon-title {
-    font-size: 0.8rem;
-    color: var(--dark-gray);
-    text-transform: capitalize;
+    @include text-format(
+      $font-size: 0.8rem,
+      $color: var(--dark-gray),
+      $transform: capitalize
+    );
   }
 }
 .deivder {
-  border: 0.5px solid #80808066;
+  border: 0.5px solid var(--light-gray);
   margin: 3px 0;
   grid-column: 1 / 4;
 }
@@ -56,9 +49,17 @@
   grid-column: 2 / 3;
   text-align: center;
   a {
-    text-decoration: none;
-    text-transform: capitalize;
-    font-size: 0.8rem;
-    color: var(--dark-gray);
+    @include text-format(
+      $font-size: 0.8rem,
+      $color: var(--dark-gray),
+      $transform: capitalize
+    );
+  }
+}
+//just for very little sizes
+@media screen and (max-width: 375px) {
+  .icon-menu {
+    @include fix-position($top: 120px, $right: -100%);
+    width: 100%;
   }
 }

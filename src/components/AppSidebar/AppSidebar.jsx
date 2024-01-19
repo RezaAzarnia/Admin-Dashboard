@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaMountainSun } from 'react-icons/fa6';
 import { MdShoppingBasket, MdAssignment, MdPerson, MdList, MdSettings } from 'react-icons/md';
 import { useSidebarContext } from '../../context/SidebarContext';
@@ -7,13 +7,10 @@ import { BiCommentDetail } from "react-icons/bi";
 import { NavLink } from 'react-router-dom';
 import { RxExit } from "react-icons/rx";
 import './AppSidebar.scss';
-
 export default function AppSidebar() {
     const { state: { isOpenMainSidebar } } = useSidebarContext();
-
     return (
-        <aside className={`main-sidebar ${isOpenMainSidebar ? 'open' : 'close'}`}>
-            {/* Main Section */}
+        <aside className={`main-sidebar ${isOpenMainSidebar ? 'open' : 'close'} `}>
             <div className="sidebar-section">
                 {isOpenMainSidebar ? (
                     <h3 className="sidebar-section-header">Main</h3>

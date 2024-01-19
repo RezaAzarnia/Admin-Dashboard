@@ -6,21 +6,17 @@ import {
 } from "../configs/Configs";
 let sanitizeProductData;
 
-const productService = {
-  getAllProducts: async () => {
+const getProducts = async (page = 1, limit = 5) => {
+  try {
     const response = await baseURL.get(
-      `/products?_expand=category`
-    );
-    return response.data;
-  },
-  getPaginatedProducts: async (page = 1, limit = 5) => {
-    const response = await handleService(
       `/products?_expand=category&&_page=${page}&&_limit=${limit}`
     );
-    return response;
-  },
+    const productsLength = response.headers.get("X-Total-Count") || 0;
+    return { data: response?.data || [], length: productsLength };
+  } catch (error) {
+    throw error;
+  }
 };
-
 const getSingleProduct = async (productId) => {
   try {
     const response = await baseURL.get(
@@ -29,7 +25,7 @@ const getSingleProduct = async (productId) => {
 
     return response.data;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 
@@ -43,7 +39,7 @@ const addProduct = async (productData) => {
     });
     return handleResponse(response, "product added succesfully");
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 const addDiscount = async (productID, productDiscount) => {
@@ -53,7 +49,7 @@ const addDiscount = async (productID, productDiscount) => {
     });
     return handleResponse(response, "discount added succesfully");
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 const editProduct = async (productID, productData) => {
@@ -65,7 +61,7 @@ const editProduct = async (productID, productData) => {
     });
     return handleResponse(response, "product edited succesfully");
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 
@@ -74,12 +70,12 @@ const deleteProduct = async (productID) => {
     const response = await baseURL.delete(`/products/${productID}`);
     return handleResponse(response, "product deleted succesfully");
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 export {
   addProduct,
-  productService,
+  getProducts,
   getSingleProduct,
   deleteProduct,
   editProduct,

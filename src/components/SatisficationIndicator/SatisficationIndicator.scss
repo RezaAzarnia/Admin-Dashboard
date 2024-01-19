@@ -1,58 +1,62 @@
 .satisfication-indicator {
+  @include flex($direction: column, $align: center, $justify: center);
   grid-row: 1/2;
   background: var(--white);
   padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   gap: 20px;
-  justify-content: center;
   .box-title {
     text-transform: uppercase;
   }
   .satisfaction-rate {
-    color: var(--green);
-    font-size: 2.5rem;
+    @include text-format($font-size: 2.5rem, $color: var(--green));
     font-weight: 400;
   }
 }
 .satisfaction-progressbar {
-  width: 100%;
-  height: 5px;
-  background-color: #e1e0e0;
+  @include size(100%, 5px);
+  @include relative-position;
+  background-color: var(--light-gray);
   border-radius: 10px;
   margin-top: 20px;
-  position: relative;
   &::before {
     content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 93%;
-    height: 100%;
+    @include absolute-position($top: 0, $left: 0);
+    @include size(93%, 100%);
     background-color: var(--green);
     border-radius: 10px;
   }
 }
 .satisfaction-reports {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  justify-content: space-around;
-  gap: 20px;
+  @include flex($justify: space-between);
+  width: 100%;
   .report {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
+    @include flex($direction: column, $align: center);
+    gap: 4px;
   }
 }
 .satisfaction-reports .report {
   .report-title {
-    text-transform: capitalize;
-    font-size: 0.9rem;
-    color: var(--dark-gray);
+    @include text-format(
+      $font-size: 0.9rem,
+      $color: var(--dark-gray),
+      $transform: capitalize
+    );
   }
   .count {
     font-size: 0.875rem;
+  }
+}
+.satisfication-trend-icon {
+  color: var(--green);
+}
+@include breakpoint("small-screen") {
+  .satisfication-indicator {
+    grid-row: auto;
+  }
+}
+@include breakpoint("medium-to-large-screen") {
+  .satisfication-indicator {
+    grid-column: 1 / 3;
+    grid-row: 3 / 4;
   }
 }

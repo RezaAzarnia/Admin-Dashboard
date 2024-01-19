@@ -6,7 +6,6 @@ import { Outlet } from 'react-router-dom';
 import { useSidebarContext } from '../../context/SidebarContext';
 import './Layout.scss'
 export default function Layout() {
-
     const { state: { isOpenMainSidebar } } = useSidebarContext()
     return (
 
@@ -16,7 +15,9 @@ export default function Layout() {
             <TaskSidebar />
             <section className="main-section">
                 <main className={`main ${isOpenMainSidebar ? '' : 'full-width'}`}>
-                    <Outlet />
+                    <div className="main-content-wrapper">
+                        <Outlet />
+                    </div>
                 </main>
             </section>
         </>

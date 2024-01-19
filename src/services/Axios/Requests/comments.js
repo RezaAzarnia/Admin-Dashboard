@@ -2,17 +2,17 @@ import {
   baseURL,
   handleResponse,
   initialDate,
-  initialTime,
 } from "../configs/Configs";
 
 const getComments = async (page = 1, limit = 5) => {
   try {
-    const comments = await baseURL.get(
+    const response = await baseURL.get(
       `/comments?_expand=product&&_page=${page}&&_limit=${limit}`
     );
-    return comments;
+    const commentsLength = response.headers.get("X-Total-Count") || 0;
+    return { data: response?.data || [], length: commentsLength };
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 const deleteComment = async (commentId) => {
@@ -20,7 +20,7 @@ const deleteComment = async (commentId) => {
     const response = await baseURL.delete(`/comments/${commentId}`);
     return handleResponse(response, "comment deleted succesfully");
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 
@@ -32,7 +32,7 @@ const anwserComment = async (commentId, anwser) => {
     });
     return handleResponse(response, "anwser added succesfully");
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 const rejectCommentById = async (commentId) => {
@@ -42,7 +42,7 @@ const rejectCommentById = async (commentId) => {
     });
     return handleResponse(response, "comment rejected!!");
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 const acceptCommentById = async (commentId) => {
@@ -52,7 +52,7 @@ const acceptCommentById = async (commentId) => {
     });
     return handleResponse(response, "comment accepted!!");
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 

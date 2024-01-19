@@ -17,7 +17,7 @@ export default function EditModal({ isOpen, setIsOpen, isLoading, title, childre
             {children}
             <div className="edit-modal-btn-row">
               <div className="edit-modal-buttons">
-                <Button title='cancel' mode='error' onclick={() => !isLoading && setIsOpen(false)} />
+                <Button title='cancel' mode='error' type='button' onclick={() => !isLoading && setIsOpen(false)} />
                 <Button
                   isLoading={isLoading}
                   title={title}

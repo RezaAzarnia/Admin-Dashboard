@@ -1,77 +1,64 @@
 .productDetail-container {
+  @include flex;
   background-color: var(--white);
   margin: 30px 0;
   padding: 15px;
-  display: grid;
-  grid-template-columns: 28% 70%;
-  grid-template-rows: 100%;
   gap: 20px;
-  height: 350px;
-  width: 100%;
+  @include size(100%, 390px);
   .product-image {
-    height: 100%;
-    grid-column: 1 /2;
+    @include size(100%);
+    max-width: 390px;
     img {
-      width: 100%;
-      height: 100%;
+      @include size(100%);
     }
   }
 
   .product-description {
-    height: 100%;
-    display: grid;
+    @include size(100%);
+    @include grid-container;
     grid-template-rows: 15% 55% 10%;
     align-items: center;
     .price-row {
       width: 25%;
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
+      @include flex($align: baseline, $justify: space-between);
     }
     .product-detail-title {
       text-transform: capitalize;
       font-weight: bold;
     }
     .discount-price {
+      @include text-format($font-size: 0.8rem, $color: var(--gray));
       text-decoration: line-through;
-      color: gray;
-      font-size: 0.8rem;
     }
-
   }
 }
-.product-detail-main-price{
+.product-detail-main-price {
   color: var(--dark-green);
   font-weight: bold;
 }
 .price-rating-part {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
- margin-top: 20px;
+  @include flex($align: baseline, $justify: space-between);
+  margin-top: 20px;
 }
 .watchlistBtn {
   width: 25%;
 }
 .product-detail-info {
+  @include text-format($font-size: 1rem, $color: var(--dark-gray));
   line-height: 2;
-  font-size: 1rem;
-  color: var(--dark-gray);
   padding-right: 20px;
   text-wrap: pretty;
 }
-
 .product-detail-tabPane {
   background-color: var(--white);
   margin: 20px 0;
   padding: 15px;
   .tabpane-header {
-    display: flex;
+    @include flex;
     gap: 30px;
     border-bottom: 0.5px solid var(--light-gray);
     .tabpane-list-item {
-      font-size: 0.9rem;
-      text-transform: capitalize;
+      @include text-format($font-size: 0.9rem, $transform: capitalize);
       cursor: pointer;
     }
     .tabpane-list-item.active {
@@ -95,39 +82,18 @@
     }
   }
 }
-
 .comment {
   border: 1px solid var(--light-gray);
   background-color: var(--white);
   padding: 15px;
   margin-bottom: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  @include box-shadow(0, 2px, 4px, rgba(0, 0, 0, 0.1));
+  .comment-header {
+    @include flex($align: center, $justify: space-between);
+    margin-bottom: 10px;
+  }
 }
-
-.comment-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.username {
-  font-weight: bold;
-  color: #333;
-}
-
-.date {
-  font-size: 14px;
-  color: var(--gray);
-}
-
-
-.content {
-  line-height: 1.6;
-  color: var(--dark-gray);
-}
-
 .answer {
   padding: 19px 15px;
   border-radius: 8px;
@@ -137,21 +103,45 @@
 }
 
 .answer-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  @include flex($align: center, $justify: space-between);
   margin-bottom: 10px;
 }
 
-.answer-username {
+.answer-username,
+.username {
   font-weight: bold;
 }
-
-.answer-date {
-  font-size: 14px;
-  color: var(--gray);
+.date {
+  @include text-format($font-size: 14px, $color: var(--gray));
 }
-
 .answer-content {
   color: var(--dark-gray);
+}
+@include breakpoint("small-to-medium-screen") {
+  .productDetail-container {
+    @include size(100%, auto);
+    flex-wrap: wrap;
+    background-color: var(--white);
+    margin: 20px 0;
+    padding: 15px;
+    gap: 20px;
+    .product-image {
+      max-width: 100%;
+      @include size(100%, 50%);
+    }
+    .product-description {
+      grid-template-rows: auto;
+      .product-detail-title {
+        margin-bottom: 10px;
+      }
+    }
+  }
+  .watchlistBtn {
+    width: 100%;
+  }
+}
+@include breakpoint("large-screen") {
+  .watchlistBtn {
+    width: 35%;
+  }
 }

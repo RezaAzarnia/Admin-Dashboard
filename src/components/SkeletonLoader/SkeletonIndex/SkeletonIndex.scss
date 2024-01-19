@@ -1,0 +1,22 @@
+.skeleton-container {
+  .skeleton {
+    background-color: var(--light-gray) !important;
+  }
+  .social-campaign-container {
+    grid-template-rows: 400px;
+  }
+}
+@include breakpoint("small-screen") {
+  .skeleton-container {
+    .Analytics-part {
+      grid-template-rows: repeat(2, 230px);
+      margin-bottom: 0;
+    }
+    .social-campaign-container {
+      grid-template-rows: repeat(2, 200px);
+      .table{
+        overflow: hidden;
+      }
+    }
+  }
+}

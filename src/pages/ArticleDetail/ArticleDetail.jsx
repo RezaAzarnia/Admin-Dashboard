@@ -7,10 +7,15 @@ import { FaRegCalendarAlt, FaUser } from "react-icons/fa";
 import useFetchSingleItem from '../../hooks/useFetchSingleItem'
 import { getSingleArticle } from '../../services/Axios/Requests/articles'
 import './ArticleDetail.scss'
+import Alert from '../../Components/Alert/Alert'
 export default function ArticleDetail() {
     const { id } = useParams('id');
-    const { data: article } = useFetchSingleItem("Articles", id, getSingleArticle)
+    const { data: article, isError, error } = useFetchSingleItem("Articles", id, getSingleArticle)
     const { articleTitle, author, publishedDate, articleCover, articleBody } = article || {}
+    
+    if (isError) {
+        return <Alert message={error} />
+    }
     return (
         <>
             <BreadCrump />
@@ -30,9 +35,11 @@ export default function ArticleDetail() {
                     <img src={articleCover} />
                 </div>
                 <div className="articel-body-container">
-                    <div className='article-body' dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(articleBody) }}></div>
-
-
+                    <div className='article-body'
+                        dangerouslySetInnerHTML={
+                            { __html: DOMPurify.sanitize(articleBody) }
+                        }>
+                    </div>
                 </div>
             </div >
         </>

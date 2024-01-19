@@ -1,16 +1,21 @@
-import React, { forwardRef, useCallback, useEffect, useState } from 'react'
+import React, { forwardRef, useEffect, useState } from 'react'
 import { TbMessageChatbot } from "react-icons/tb";
 import { getNotfications, seeAllNotificatios, seeNotification } from '../../services/Axios/Requests/notification';
 import Button from '../Form/Button/Button'
-import './NotificationsBox.scss';
 import useFetchItem from '../../hooks/useFetchItem'
 import useItemMutation from '../../hooks/useItemMutation';
+import './NotificationsBox.scss';
 
 const NotificationsBox = forwardRef((props, ref) => {
-    const { data: notifs } = useFetchItem('Notification', getNotfications);
+    const { data: notifs, isError, error } = useFetchItem('Notification', getNotfications);
     const { isOpen, setNotificationsLength } = props;
     const [initialLoad, setInitialLoad] = useState(true)
     const [notifId, setNotifId] = useState(0)
+
+
+    // if (isError) {
+    //     console.log(error)
+    // }
 
     useEffect(() => {
         setNotificationsLength(notifs?.length)
@@ -18,9 +23,11 @@ const NotificationsBox = forwardRef((props, ref) => {
 
     //use this model to don't request at first page loading 
     useEffect(() => {
-        if (!initialLoad) {
+        if (notifId !== 0 && !initialLoad) {
             readNotifs();
+            setNotifId(0)
         }
+
     }, [notifId]);
 
     //change the initial load - can request after page load

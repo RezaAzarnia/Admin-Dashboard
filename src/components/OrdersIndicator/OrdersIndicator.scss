@@ -1,0 +1,49 @@
+.orders-indicator-box {
+  background: var(--white);
+  grid-row: 1 / 3;
+}
+
+.circle-chart {
+  @include size(100%, 47%);
+  margin: 12px 0;
+}
+
+.visit-reports {
+  .visit-reports-list-item {
+    @include flex($align: center, $justify: space-between);
+    @include size(100%, 61px);
+    border-top: 1px solid var(--light-gray);
+    padding: 10px 19px;
+    .report-info-chart {
+      @include size(45%, 100%);
+    }
+  }
+}
+
+.report-info {
+  .report-info-title {
+    @include relative-position;
+    text-transform: capitalize;
+    &::before {
+      content: "";
+      @include absolute-position($top: 0, $left: -15px);
+      @include size(10px);
+      background-color: var(--green);
+    }
+  }
+  .report-info-counts {
+    @include text-format($font-size: 0.875rem, $color: var(--gray));
+  }
+}
+
+@include breakpoint("small-screen") {
+  .orders-indicator-box {
+    grid-row: auto;
+  }
+}
+@include breakpoint("medium-to-large-screen") {
+  .orders-indicator-box {
+    grid-column: 3 / 5;
+    grid-row: 3 / 5;
+  }
+}

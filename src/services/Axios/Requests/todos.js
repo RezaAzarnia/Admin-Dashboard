@@ -12,11 +12,10 @@ const createTodo = async (todoTitle) => {
       isDone: false,
       todoDate: initialDate(),
       todoTime: initialTime(),
-      userId: 1,
     });
     return handleResponse(response, "todo added");
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 const getTodos = async () => {
@@ -24,7 +23,7 @@ const getTodos = async () => {
     const response = await baseURL.get("/todos");
     return response.data.reverse();
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 const changeTodoStatus = async (todoId, isDone) => {
@@ -34,7 +33,7 @@ const changeTodoStatus = async (todoId, isDone) => {
     });
     return handleResponse(response, "todo isDone changed");
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 const deleteTodo = async (todoId) => {
@@ -42,7 +41,7 @@ const deleteTodo = async (todoId) => {
     const response = await baseURL.delete(`/todos/${todoId}`);
     return handleResponse(response, "todo deleted");
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 

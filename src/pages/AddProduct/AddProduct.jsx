@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { memo, useEffect, useRef, useState } from 'react'
 import { Form, Formik } from 'formik';
 import { addProduct } from '../../services/Axios/Requests/products';
-import { getAllCategory } from '../../services/Axios/Requests/category';
+import { categoryService } from '../../services/Axios/Requests/category';
 import BreadCrump from '../../Components/BreadCrump/BreadCrump'
 import Input from '../../components/Form/Input/Input'
 import UploadButton from '../../Components/Form/UploadButton/UploadButton'
@@ -12,11 +12,11 @@ import useFetchItem from '../../hooks/useFetchItem';
 import useItemMutation from '../../hooks/useItemMutation';
 import './AddProduct.scss'
 
-export default function AddProduct() {
+function AddProduct() {
     const [productCover, setProductCover] = useState('')
     const [coverErrors, setCoverErrors] = useState('')
     const { showToast, ToastComponent } = useToast()
-    const { data: category } = useFetchItem('Categories', getAllCategory)
+    const { data: category } = useFetchItem('Categories', () => categoryService.getAllCategory())
     const resetFormRef = useRef()
 
     const initialValues = {
@@ -40,12 +40,12 @@ export default function AddProduct() {
         if (!data.productTitle.trim()) {
             errors.push('please enter product title!')
         }
-        if (!data.productPrice) {
+        if (!data.productPrice.trim()) {
             errors.push('please enter the product price')
         } else {
             const numberRegex = /^[0-9]+(\.[0-9]+)?$/
 
-            if (!numberRegex.test(data.productPrice)) {
+            if (!numberRegex.test(data.productPrice.trim())) {
                 errors.push('Please enter only numbers for the product price.')
             } else if (data.productPrice <= 0) {
                 errors.push("Product price can't be 0 or a negative value. ")
@@ -54,49 +54,42 @@ export default function AddProduct() {
         if (data.categoryId === '-1') {
             errors.push('please select product category!')
         }
-        if (!data.productCount) {
+        if (!data.productCount.trim()) {
             errors.push('please enter the product count')
         } else {
             const numberRegex = /^[0-9]+$/
-            if (!numberRegex.test(data.productCount)) {
+            if (!numberRegex.test(data.productCount.trim())) {
                 errors.push('Please enter only numbers for the product count.')
             } else if (data.productCount <= 0) {
                 errors.push("Product count can't be 0 ")
             }
         }
-        if (!data.productDescription) {
+        if (!data.productDescription.trim()) {
             errors.push('please enter product description!')
         }
         if (!data.productCover) {
             errors.push('please upload product cover!')
-            console.log('error cover')
         }
         return errors;
 
     }
-    const { mutate: handleSubmit } = useItemMutation(async (values) => {
-        const productErrors = validateProductsForm(values)
+    const { mutate: handleSubmit, isLoading: isCreateProdductLoading } = useItemMutation(async (values) => {
+        const productErrors = validateProductsForm(values);
         if (productErrors.length > 0) {
-            showToast('error', productErrors.map((item, index) => <p key={index + 1}>{item}</p>))
-
-            return Promise.reject(productErrors[0])
+            return Promise.reject(productErrors);
         }
         // numbering the category id
-        values['categoryId'] = Number(values.categoryId)
-
-        const response = await addProduct({ ...values })
-
-        switch (response.status) {
-            case 200:
-                showToast('success', response.message)
-                setProductCover('')
-                resetFormRef.current()
-                return response
-            default:
-                showToast('error', response.message)
-                return Promise.reject(response.message)
-        }
-    }, "Products")
+        values['categoryId'] = +(values.categoryId);
+        const response = await addProduct({ ...values });
+        return response;
+    }, "Products",
+        (success) => {
+            showToast('success', success.message);
+            setProductCover('');
+            resetFormRef.current();
+        }, (error) => {
+            showToast('error', error);
+        })
     return (
         <>
             {ToastComponent()}
@@ -132,9 +125,8 @@ export default function AddProduct() {
                                     <option value='-1'>select product category</option>
                                     {
                                         category?.length > 0 &&
-                                        category?.map(item => {
-                                            console.log(item)
-                                            return <option value={Number(item.id)} key={item.id}>{item.categoryName}</option>
+                                        category?.reverse().map(item => {
+                                            return <option value={+item.id} key={item.id}>{item.categoryName}</option>
                                         })
                                     }
                                 </Input>
@@ -171,12 +163,8 @@ export default function AddProduct() {
                             </div>
                         </div>
                         <div className="add-product-buttons">
-                            <Button title='save product' mode='success' type='submit' />
-                            <Button title='cancel' mode='warning' type='button' onclick={() => {
-                                //clear inputs and cover in cancel mode
-                                resetFormRef.current();
-                                setProductCover('')
-                            }} />
+                            <Button title='save product' mode='success' type='submit' isLoading={isCreateProdductLoading} />
+                            <Button title='cancel' mode='warning' type='button' />
                         </div>
                     </div>
                 </Form>
@@ -184,3 +172,4 @@ export default function AddProduct() {
         </>
     )
 }
+export default memo(AddProduct)

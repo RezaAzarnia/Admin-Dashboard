@@ -4,7 +4,7 @@ const getNotfications = async () => {
     const notifications = await baseURL.get("/notifications");
     return notifications.data.filter((item) => item.isRead == 0);
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 const seeNotification = async (notifId) => {
@@ -14,7 +14,7 @@ const seeNotification = async (notifId) => {
     });
     return handleResponse(response, "notif is read suucessfully");
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 const seeAllNotificatios = async (notifications) => {
@@ -23,7 +23,7 @@ const seeAllNotificatios = async (notifications) => {
     try {
       await baseURL.patch(`/notifications/${item.id}`, { isRead: 1 });
     } catch (error) {
-      return error;
+      throw error;
     }
   }
 };

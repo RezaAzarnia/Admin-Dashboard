@@ -7,8 +7,8 @@ import TextEditor from '../../Components/Form/TextEditor';
 import SectionHeader from '../../Components/SectionHeader/SectionHeader';
 import UploadButton from '../../Components/Form/UploadButton/UploadButton';
 import Button from '../../Components/Form/Button/Button';
-import useToast from '../../hooks/useToast';
 import useItemMutation from '../../hooks/useItemMutation';
+import useToast from '../../hooks/useToast';
 import './AddArticle.scss'
 
 export default function AddArtice() {
@@ -19,8 +19,9 @@ export default function AddArtice() {
 
     const initialValue = {
         articleTitle: '',
-        articleCover,
-        articleBody: ''
+        articleDescription: '',
+        articleBody: '',
+        articleCover
     }
     useEffect(() => {
         if (coverErrors.length > 0) {
@@ -31,8 +32,11 @@ export default function AddArtice() {
 
     const valdateArticleForm = (data) => {
         let errors = []
-        if (!data.articleTitle) {
-            errors.push('please enter article title')
+        if (!data.articleTitle.trim()) {
+            errors.push('please enter article title!')
+        }
+        if (!data.articleDescription.trim()) {
+            errors.push('please enter article description!')
         }
         if (!data.articleBody.trim()) {
             errors.push('please enter article body!')
@@ -42,25 +46,22 @@ export default function AddArtice() {
         }
         return errors;
     }
-    const { mutate: createArticle } = useItemMutation(async (values) => {
+    const { mutate: createArticle, isLoading: isCreateArticleLoading } = useItemMutation(async (values) => {
         const articleErrors = valdateArticleForm(values)
         if (articleErrors.length > 0) {
-            showToast('error', articleErrors.map((item, index) => <p key={index + 1}>{item}</p>))
-            return Promise.reject(articleErrors[0])
+            return Promise.reject(articleErrors);
         }
         const createArticleResponse = await addArticle({ ...values })
+        return createArticleResponse;
+    }, 'Articles',
+        (success) => {
+            showToast('success', success.message)
+            resetFormRef.current()
+            setArticleCover('')
+        }, (error) => {
+            showToast('error', error)
+        })
 
-        switch (createArticleResponse.status) {
-            case 200:
-                showToast('success', createArticleResponse.message)
-                resetFormRef.current()
-                setArticleCover('')
-                return createArticleResponse
-            default:
-                showToast('error', createArticleResponse.message)
-                return Promise.reject(createArticleResponse.message)
-        }
-    }, 'Articles')
     return (
         <>
             {ToastComponent()}
@@ -81,6 +82,11 @@ export default function AddArtice() {
                                     placeholder='test article in the website'
                                     lableTitle='article title'
                                     name='articleTitle'
+                                />
+                                <Input type='textarea'
+                                    placeholder='article description'
+                                    lableTitle='article description'
+                                    name='articleDescription'
                                 />
                             </div>
                             <div className="editor-part">
@@ -106,7 +112,7 @@ export default function AddArtice() {
                                 </div>
                             </div>
                             <div className="add-article-buttons">
-                                <Button title='save article' mode='success' type='submit' />
+                                <Button title='save article' mode='success' type='submit' isLoading={isCreateArticleLoading} />
                                 <Button title='cancel' mode='warning' type='button' />
                             </div>
                         </Form>

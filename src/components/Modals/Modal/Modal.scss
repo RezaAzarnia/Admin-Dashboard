@@ -1,5 +1,15 @@
 .simple-modal {
-  gap: 15px;
   align-items: flex-start;
+  gap: 15px;
   width: 30%;
+}
+@include breakpoint("small-screen") {
+  .simple-modal {
+    width: 90%;
+  }
+}
+@include breakpoint("medium-screen") {
+  .simple-modal {
+    min-width: 400px;
+  }
 }

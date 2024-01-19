@@ -14,11 +14,13 @@ import useDeleteItem from '../../hooks/useDeleteItem';
 import useItemMutation from '../../hooks/useItemMutation';
 import usePagination from '../../hooks/usePagination';
 import Paginator from '../../Components/Paginator/Paginator';
+import SkeletonTable from '../../Components/SkeletonLoader/SkeletonTable/SkeletonTable';
 import './ManageComments.scss'
 
 export default function ManageComments() {
+    const commentLimitPerPage = 5;
     const [page, setPage] = useState(1)
-    const { data: comments, isPreviousData, totalPage, computedIndex } = usePagination('Comments', getComments, page)
+    const { data: comments, isPreviousData, totalPage, computedIndex, isLoading, isError, error } = usePagination('Comments', getComments, page, commentLimitPerPage)
     const { showToast, ToastComponent } = useToast()
     const [commentInfo, setCommentInfo] = useState({})
     const [commentId, setCommentId] = useState(0)
@@ -28,63 +30,75 @@ export default function ManageComments() {
     const { showConfirmModal: showAccepetModal, hideConfirmModal: hideAcceptModal, ConfirmModalComponent: AcceptCommentComponent } = useConfirmModal()
     const { showConfirmModal: showRejectModal, hideConfirmModal: hideRejectModal, ConfirmModalComponent: RejectCommentComponent } = useConfirmModal()
 
-    const { mutate: removeComment } = useDeleteItem(async () => {
+    const { mutate: removeComment, isLoading: isRemoveCommentLoading } = useDeleteItem(async () => {
         const deleteCommentResponse = await deleteComment(commentId)
-        hideDeleteModal()
-        switch (deleteCommentResponse.status) {
-            case 200:
-                showToast('success', deleteCommentResponse.message)
-                return deleteCommentResponse;
-            default:
-                showToast('error', deleteCommentResponse.message)
-                return Promise.reject(deleteCommentResponse.message)
+        return deleteCommentResponse;
+    }, ['Comments', page], commentId, page, setPage, totalPage, commentLimitPerPage,
+        (success) => {
+            showToast('success', success.message)
+            hideDeleteModal()
         }
-    }, 'Comments', commentId)
-    const { mutate: anwserToComment } = useItemMutation(async (values) => {
+        ,
+        (error) => {
+            showToast('error', error)
+            hideDeleteModal()
+        }
+    )
+
+    const { mutate: anwserToComment, isLoading: isAnwserLoading } = useItemMutation(async (values) => {
         const errors = [];
         if (!values.anwser) {
             errors.push('please enter the anwser for comment')
         }
         if (errors.length > 0) {
-            showToast('error', errors[0])
-            return Promise.reject(errors[0])
+            return Promise.reject(errors)
         }
         const anwserResponse = await anwserComment(commentId, values.anwser)
-        setIsShowAnswerModal(false)
-        switch (anwserResponse.status) {
-            case 200:
-                showToast('success', anwserResponse.message)
-                break
-            default:
-                showToast('error', anwserResponse.message)
-                return Promise.reject(anwserResponse.message)
+        setIsShowAnswerModal(false);
+        return anwserResponse;
+    }, "Comments",
+        (success) => {
+            showToast('success', success.message)
+        },
+        (error) => {
+            showToast('error', error)
         }
-    }, "Comments")
-    const { mutate: rejectComment } = useItemMutation(async () => {
-        const rejectCommentResponse = await rejectCommentById(commentId)
-        hideRejectModal()
-        switch (rejectCommentResponse.status) {
-            case 200:
-                showToast('success', rejectCommentResponse.message)
-                return rejectCommentResponse
-            default:
-                showToast('error', rejectCommentResponse.message)
-                return Promise.reject(rejectCommentResponse.message)
-        }
-    }, 'Comments')
-    const { mutate: acceptComment } = useItemMutation(async () => {
-        const acceptCommentResponse = await acceptCommentById(commentId)
-        hideAcceptModal()
-        switch (acceptCommentResponse.status) {
-            case 200:
-                showToast('success', acceptCommentResponse.message)
-                return acceptCommentResponse
-            default:
-                showToast('error', acceptCommentResponse.message)
-                return Promise.reject(acceptCommentResponse.message)
-        }
-    }, 'Comments')
 
+    )
+
+    const { mutate: rejectComment, isLoading: isRejectCommentLoading } = useItemMutation(async () => {
+        const rejectCommentResponse = await rejectCommentById(commentId)
+        return rejectCommentResponse;
+    }, 'Comments',
+        (success) => {
+            showToast('success', success.message)
+            hideRejectModal();
+        },
+        (error) => {
+            showToast('error', error)
+            hideRejectModal();
+        }
+    )
+
+    const { mutate: acceptComment, isLoading: isAcceptCommentLoading } = useItemMutation(async () => {
+        const acceptCommentResponse = await acceptCommentById(commentId)
+        return acceptCommentResponse
+    }, 'Comments',
+        (success) => {
+            showToast('success', success.message)
+            hideAcceptModal()
+        },
+        (error) => {
+            showToast('error', error)
+            hideAcceptModal()
+        })
+
+    if (isLoading) {
+        return <SkeletonTable />
+    }
+    if (isError) {
+        return <Alert message={error} />
+    }
     return (
         <>
             <BreadCrump />
@@ -109,7 +123,7 @@ export default function ManageComments() {
                                 {
                                     comments?.map((comment, index) => {
                                         return <tr key={comment.id}>
-                                            <td className={comment.anwser ? 'hasAnwser' : 'hasNoAnwser'}>{index + 1}</td>
+                                            <td className={comment.anwser ? 'hasAnwser' : 'hasNoAnwser'}>{computedIndex + index}</td>
                                             <td>{comment.userInfo.userName}</td>
                                             <td>{comment.product.productTitle}</td>
                                             <td>
@@ -117,14 +131,14 @@ export default function ManageComments() {
                                             </td>
                                             <td>{comment.date}</td>
 
-                                            <td>
+                                            <td className='table-button'>
                                                 <Button title='seeComment' mode='success' onclick={() => {
                                                     setIsShowCommentBody(true)
                                                     setCommentInfo(comment)
                                                 }} />
                                             </td>
 
-                                            <td>
+                                            <td className='table-button'>
                                                 <Button title='anwser' mode='success' onclick={() => {
                                                     setIsShowAnswerModal(true)
                                                     setCommentId(comment.id)
@@ -132,7 +146,7 @@ export default function ManageComments() {
                                             </td>
                                             {
                                                 comment.isAccept === 1 ? (
-                                                    <td>
+                                                    <td className='table-button'>
                                                         <Button title='reject' mode='error' onclick={() => {
                                                             showRejectModal()
                                                             setCommentId(comment.id)
@@ -140,14 +154,16 @@ export default function ManageComments() {
                                                     </td>
 
                                                 ) : (
-                                                    <td><Button title='accept' mode='success' onclick={() => {
-                                                        showAccepetModal()
-                                                        setCommentId(comment.id)
-                                                    }} /></td>
+                                                    <td className='table-button'>
+                                                        <Button title='accept' mode='success' onclick={() => {
+                                                            showAccepetModal()
+                                                            setCommentId(comment.id)
+                                                        }} />
+                                                    </td>
                                                 )
                                             }
 
-                                            <td>
+                                            <td className='table-button'>
                                                 <Button title='delete' mode='error' onclick={() => {
                                                     showDeleteModal()
                                                     setCommentId(comment.id)
@@ -166,13 +182,13 @@ export default function ManageComments() {
                     setPage={setPage}
                     isPreviousData={isPreviousData}
                     totalPage={totalPage}
-                    data={comments} />
+                />
             </div >
             {/* start comments actions */}
             {ToastComponent()}
-            {AcceptCommentComponent('accept', acceptComment)}
-            {RejectCommentComponent('reject', rejectComment)}
-            {DeleteModalComponent('delete', removeComment)}
+            {AcceptCommentComponent('accept', acceptComment, isAcceptCommentLoading)}
+            {RejectCommentComponent('reject', rejectComment, isRejectCommentLoading)}
+            {DeleteModalComponent('delete', removeComment, isRemoveCommentLoading)}
 
             {isShowCommentBody &&
                 <Modal isOpen={isShowCommentBody} setIsOpen={setIsShowCommentBody} title='comment body' >
@@ -186,6 +202,7 @@ export default function ManageComments() {
                     setIsOpen={setIsShowAnswerModal}
                     initialValues={{ anwser: '' }}
                     onSubmit={anwserToComment}
+                    isLoading={isAnwserLoading}
                 >
                     <div className="comment-anwser-textarea">
                         <Input type='textarea' lableTitle='anwser comment body' name='anwser' />

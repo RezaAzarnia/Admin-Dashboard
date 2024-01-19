@@ -1,33 +1,40 @@
 .Advertise-box {
-  grid-column: 5/7;
+  @include flex($direction: column, $justify: space-around);
   background-color: var(--white);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
+  grid-column: 5/7;
   .advertise-chart {
-    width: 90%;
-    height: 65%;
+    @include size(90%, 65%);
   }
 }
 .Advertise-box {
   .chart-info-row {
-    display: flex;
-    align-items: center;
+    @include flex($align: center);
     gap: 30px;
     padding: 0 20px;
   }
 }
+
+$colors: var(--green), var(--warning), var(--primary);
 .advertise-chart-info {
+  @include relative-position;
   text-transform: capitalize;
-  position: relative;
   font-size: 0.75rem;
-  &::before {
-    content: "";
-    position: absolute;
-    top: 1px;
-    left: -12px;
-    width: 10px;
-    height: 10px;
-    background-color: var(--green);
+  @for $i from 1 through length($colors) {
+    &:nth-child(#{$i})::before {
+      content: "";
+      @include absolute-position($top: 1px, $left: -12px);
+      @include size(10px);
+      background-color: nth($colors, $i);
+    }
+  }
+}
+@include breakpoint("small-screen") {
+  .Advertise-box {
+    grid-column: auto;
+  }
+}
+@include breakpoint("medium-screen") {
+  .Advertise-box {
+    grid-column: 1 / span 6;
   }
 }

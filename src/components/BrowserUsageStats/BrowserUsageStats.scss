@@ -1,31 +1,34 @@
 .browser-usage-stats {
-  grid-row: 2/3;
+  @include flex($direction: column, $justify: space-around);
   background: var(--white);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
+  grid-row: 2/3;
 }
 .browsers-stats {
   .browsers-list > .browser-list-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 14px;
+    @include flex($justify: space-between, $align: center);
+    @include text-format($font-size: 0.9rem ,$transform: capitalize);
     border-bottom: 1px solid var(--light-gray);
-    text-transform: capitalize;
-    font-size: 0.9rem;
+    padding: 12px 14px;
     &:last-child {
       border-bottom: 0;
     }
   }
 }
 .browser-usage-pill-badget {
+  @include flex($justify: center, $align: center);
+  @include text-format($font-size: 0.75rem ,$color:var(--white));
   background-color: var(--danger);
   border-radius: 30px;
-  color: var(--white);
-  font-size: 0.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 2px 5px;
+}
+@include breakpoint("small-screen") {
+  .browser-usage-stats {
+    grid-row: auto;
+  }
+}
+@include breakpoint("medium-to-large-screen") {
+  .browser-usage-stats {
+    grid-column: 1 / 3;
+    grid-row: 4 / 5;
+  }
 }

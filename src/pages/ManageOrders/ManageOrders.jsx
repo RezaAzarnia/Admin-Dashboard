@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { deleteOrder, getPaginatedOrders } from '../../services/Axios/Requests/orders'
+import { deleteOrder, getOrders } from '../../services/Axios/Requests/orders'
 import BreadCrump from '../../Components/BreadCrump/BreadCrump'
 import Table from '../../Components/Table/Table'
 import Button from '../../Components/Form/Button/Button'
@@ -9,31 +9,40 @@ import Alert from '../../Components/Alert/Alert'
 import useDeleteItem from '../../hooks/useDeleteItem'
 import Paginator from '../../Components/Paginator/Paginator'
 import usePagination from '../../hooks/usePagination'
+import SkeletonTable from '../../Components/SkeletonLoader/SkeletonTable/SkeletonTable'
 import './ManageOrders.scss'
 export default function ManageOrders() {
-    const [orderId, setOrderId] = useState(0)
-    const [page, setPage] = useState(1)
-    const { showToast, ToastComponent } = useToast()
-    const { data: orders, isPreviousData, totalPage, computedIndex } = usePagination('Orders', getPaginatedOrders, page)
-    const { showConfirmModal: showDeleteModal, hideConfirmModal: hideDeleteModal, ConfirmModalComponent: DeleteModalComponent } = useConfirmModal()
-
     let productPrice = null;
     let totalPrice = null;
+    const orderLimitPerPage = 5;
 
-    const { mutate: removeOrder } = useDeleteItem(async () => {
+    const [page, setPage] = useState(1)
+    const [orderId, setOrderId] = useState(0)
+    const { showToast, ToastComponent } = useToast()
+    const { data: orders, isPreviousData, totalPage, computedIndex, isLoading, isError, error } = usePagination('Orders', getOrders, page, orderLimitPerPage)
+    const { showConfirmModal: showDeleteModal, hideConfirmModal: hideDeleteModal, ConfirmModalComponent: DeleteModalComponent } = useConfirmModal()
+
+    const { mutate: removeOrder, isLoading: isOrderDeleting } = useDeleteItem(async () => {
         const deleteOrderResponse = await deleteOrder(orderId)
-        switch (deleteOrderResponse.status) {
-            case 200:
-                showToast('success', deleteOrderResponse.message)
-                hideDeleteModal()
-                return deleteOrderResponse
-            default:
-                showToast('error', deleteOrderResponse.message)
-                return Promise.reject(deleteOrderResponse.message)
+        return deleteOrderResponse;
+    }, ['Orders', page], orderId, page, setPage, totalPage, orderLimitPerPage,
+        (success) => {
+            showToast('success', success.message)
+            hideDeleteModal()
         }
-    }, ['Orders', page], orderId)
+        ,
+        (error) => {
+            showToast('error', error)
+            hideDeleteModal()
+        }
+    )
 
-
+    if (isLoading) {
+        return <SkeletonTable />
+    }
+    if (isError) {
+        return <Alert message={error} />
+    }
     return (
         <>
             <BreadCrump />
@@ -74,10 +83,12 @@ export default function ManageOrders() {
                                             <td>${totalPrice}</td>
                                             <td>{order.orderDate}</td>
                                             <td className={`order-status ${order.status}`}>{order.status}</td>
-                                            <td><Button title='delete' mode='error' onclick={() => {
-                                                setOrderId(order.id)
-                                                showDeleteModal()
-                                            }} /></td>
+                                            <td className='table-button'>
+                                                <Button title='delete' mode='error' onclick={() => {
+                                                    setOrderId(order.id)
+                                                    showDeleteModal()
+                                                }} />
+                                            </td>
                                         </tr>
                                     })
                                 }
@@ -94,7 +105,7 @@ export default function ManageOrders() {
                     data={orders} />
             </div>
             {ToastComponent()}
-            {DeleteModalComponent('delete', removeOrder)}
+            {DeleteModalComponent('delete', removeOrder, isOrderDeleting)}
         </>
     )
 }

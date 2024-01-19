@@ -1,6 +1,9 @@
 import React, { memo, useCallback } from 'react'
+import { RiLoader2Line } from "react-icons/ri";
 import './Button.scss'
+
 function Button({ title, mode, isLoading, onclick, type, disabled }) {
+
   const handleClick = useCallback(() => {
     if (typeof onclick === 'function') {
       onclick();
@@ -11,11 +14,15 @@ function Button({ title, mode, isLoading, onclick, type, disabled }) {
       className={`button ${mode}`}
       type={type}
       onClick={handleClick}
-      disabled={disabled}
-      style={isLoading ? { cursor: 'not-allowed' } : { cursor: 'pointer' }}
+      disabled={disabled || isLoading}
     >
       {
-        isLoading ? ("Loading...") : title
+        isLoading ? (
+          <span className='button-spinner-loader'>
+            <RiLoader2Line className='spinner-icon' />
+            loading
+          </span>
+        ) : title
       }
     </button>
   )

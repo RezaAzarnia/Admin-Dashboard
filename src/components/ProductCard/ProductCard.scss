@@ -1,8 +1,7 @@
 .product-card {
-  width: 100%;
-  height: 100%;
+  @include size(100%);
   background-color: var(--white);
-  border: 1px solid #ddd;
+  border: 1px solid var(--light-gray);
   transition: all 0.5s ease;
   .product-card-link {
     text-decoration: none;
@@ -11,40 +10,36 @@
   .image-part {
     height: 58%;
     img {
-      width: 100%;
-      height: 100%;
+      @include size(100%);
       object-fit: fill;
     }
   }
   &:hover {
-    box-shadow: 0px 3px 5px 1px var(--gray);
-    z-index: 99;
+    @include box-shadow(0, 3px, 5px, 1px, var(--gray));
   }
 }
 .product-body {
+  @include flex($direction: column, $justify: space-between);
   padding: 12px;
   height: 43%;
-  text-align: justify;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   gap: 10px;
+  text-align: justify;
   .product-category {
+    @include text-format($font-size: 0.75rem, $color: var(--white));
+    width: max-content;
     background: var(--dark-green);
-    color: var(--white);
-    font-size: 0.75rem;
     border-radius: 5px;
     padding: 5px;
-    width: max-content;
   }
   .card-title {
     text-transform: capitalize;
     font-weight: 600;
   }
   .card-decription {
+    width: 260px;
+    min-width: 100%;
     font-size: 0.85rem;
     text-overflow: ellipsis;
-    width: 284px;
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -54,18 +49,16 @@
   }
 }
 .rating-star {
+  @include flex($align: flex-end);
   color: var(--dark-warning);
   cursor: pointer;
-  display: flex;
   font-size: 0.875rem;
-  align-items: flex-end;
   svg {
     font-size: 1rem;
   }
 }
 .product-price {
-  color: var(--dark-green);
-  font-size: 1.2rem;
+  @include text-format($font-size: 1.2rem, $color: var(--dark-green));
   font-weight: 600;
 }
 .price-before-discount-Value {
@@ -76,8 +69,33 @@
   margin-top: 3px;
 }
 .price-discount-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
+  @include flex($align: center, $justify: space-between);
+}
+.product-card {
+  &.skeleton-loading {
+    .product-body {
+      justify-content: normal;
+    }
+    .image-part,
+    .product-category,
+    .card-decription,
+    .product-price {
+      border-radius: 2px;
+      background: var(--light-gray) !important;
+    }
+    .image-part {
+      width: 90%;
+      margin: 10px auto;
+    }
+    .product-category {
+      @include size(60%, 20px);
+    }
+    .card-decription {
+      min-width: 97%;
+      height: 90px;
+    }
+    .product-price {
+      @include size(30%, 25px);
+    }
+  }
 }

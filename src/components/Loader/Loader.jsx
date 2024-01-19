@@ -1,5 +1,6 @@
 import React from 'react'
-import './Loader.css'
+import './Loader.scss'
+
 export default function Loader() {
     return (
         <div className="container">
@@ -10,3 +11,6 @@ export default function Loader() {
         </div>
     )
 }
+
+
+

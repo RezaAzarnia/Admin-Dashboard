@@ -10,8 +10,13 @@ export default function BreadCrump() {
     }, [])
     return (
         <div className="section-header-bread-crump">
-            <div className="header-title">
-                <h3>{pathName}</h3>
+            <div className="bread-crump-title">
+                {
+                    window.innerWidth < 600 ?
+                        <h4>{pathName}</h4>
+                        :
+                        <h3>{pathName}</h3>
+                }
             </div>
             <div className="breadcrump">
                 <ol className='breadCrump-list'>

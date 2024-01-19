@@ -5,33 +5,38 @@ const baseURL = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  timeout: 10000,
 });
 
-const handleResponse = (response, successMessage) => {
-  if (navigator.onLine) {
-    if (response.status >= 200 && response.status < 300) {
-      return { status: 200, message: successMessage };
+// Response interceptor
+baseURL.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.code == "ECONNABORTED") {
+      return Promise.reject("The request timed out. Please try again.");
+    } else if (error.code == "ERR_NETWORK") {
+      return Promise.reject("Network Error! Please try again later");
     } else {
-      throw {
-        status: response.status,
-        message: response.statusText,
-      };
+      return Promise.reject(
+        "An error occurred while processing your request. Please try again."
+      );
     }
+  }
+);
+
+const handleResponse = (response, responseMessage) => {
+  if (response.status >= 200 && response.status < 300) {
+    return { status: 200, message: responseMessage };
   } else {
     throw {
-      status: 0,
-      message: "Offline: Unable to connect to the server.",
+      status: response.status,
+      message: response.statusText,
     };
   }
 };
-const handleService = async (serviceFunction) => {
-  try {
-    const response = await serviceFunction;
-    return response;
-  } catch (error) {
-    return [];
-  }
-};
+
 //remove extra spaces in the data
 const sanitizeData = (data) => {
   const trimedUsersData = Object.fromEntries(
@@ -53,7 +58,6 @@ const initialTime = () => {
 };
 export {
   baseURL,
-  handleService,
   handleResponse,
   sanitizeData,
   initialDate,

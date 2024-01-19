@@ -1,12 +1,15 @@
 import { useMutation, useQueryClient } from 'react-query'
-export default function useItemMutation(createFunction, key) {
+export default function useItemMutation(mutationFunction, key, successCallback, errorCallback) {
     const queryClient = useQueryClient()
-    return useMutation(createFunction, {
-        onSuccess: () => {
+    return useMutation(mutationFunction, {
+        onSuccess: (success) => {
+            successCallback && successCallback(success)
             queryClient.invalidateQueries(key)
         },
         onError: (error) => {
-            throw error;
+            if (error) {
+                errorCallback && errorCallback(error)
+            }
         },
     })
 }

@@ -1,11 +1,20 @@
 .box-topbar {
-  display: flex;
-  justify-content: space-between;
+  @include flex($justify: space-between);
+  @include relative-position;
   padding: 15px;
-  h3 {
-    text-transform: capitalize;
+
+  .topbar-right-side {
+    @include absolute-position($right: 5px);
+    * {
+      cursor: pointer;
+    }
   }
-  .topbar-right-side > * {
-    cursor: pointer;
+}
+@include breakpoint("small-screen") {
+  .box-topbar {
+    position: static;
+    .topbar-right-side {
+      @include absolute-position($right: 25px);
+    }
   }
 }

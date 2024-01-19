@@ -1,14 +1,11 @@
 .orders-container {
   background-color: var(--white);
   padding: 15px;
-  margin: 30px 0;
+  margin: 20px 0;
 
   .order-status {
-    width: 80%;
-    height: 10px;
-    align-items: center;
-    display: flex;
-    justify-content: center;
+    @include size(80%, 10px);
+    @include flex($align: center, $justify: center);
     border-radius: 20px;
     color: var(--white);
     font-size: 0.8rem;

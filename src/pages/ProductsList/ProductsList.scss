@@ -1,9 +1,36 @@
 .products-container {
-  margin: 40px 0;
+  margin: 20px 0;
   .products-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    @include grid-container($columns: 4);
     grid-auto-rows: 480px + 20;
-    // gap: 15px;
+  }
+}
+
+@include breakpoint("small-screen") {
+  .products-container {
+    .products-row {
+      grid-template-columns: 100%;
+    }
+  }
+}
+@include breakpoint("medium-screen") {
+  .products-container {
+    .products-row {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}
+@include breakpoint("large-screen") {
+  .products-container {
+    .products-row {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}
+@include breakpoint("xl-screen") {
+  .products-container {
+    .products-row {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 }

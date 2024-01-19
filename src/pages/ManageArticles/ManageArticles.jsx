@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import { deleteArticle, getPaginatedArticles } from '../../services/Axios/Requests/articles'
+import { deleteArticle, getArticles } from '../../services/Axios/Requests/articles'
 import BreadCrump from '../../Components/BreadCrump/BreadCrump'
-import SectionHeader from '../../Components/SectionHeader/SectionHeader'
 import Table from '../../Components/Table/Table'
 import Alert from '../../Components/Alert/Alert'
 import Button from '../../Components/Form/Button/Button'
@@ -10,29 +9,40 @@ import useToast from '../../hooks/useToast'
 import useDeleteItem from '../../hooks/useDeleteItem'
 import usePagination from '../../hooks/usePagination'
 import Paginator from '../../Components/Paginator/Paginator'
+import SkeletonTable from '../../Components/SkeletonLoader/SkeletonTable/SkeletonTable'
 import './ManageArticles.scss'
 
 export default function ManageArticles() {
+    //paginated articles
+    const articlesLimitPerPage = 5;
     const [page, setPage] = useState(1)
     const [articleId, setArticleId] = useState(0)
     const { showToast, ToastComponent } = useToast()
 
+    const { data: articles, isPreviousData, isError, error, totalPage, computedIndex, isLoading } = usePagination('Articles', getArticles, page, articlesLimitPerPage)
     const { showConfirmModal: showDeleteModal, hideConfirmModal: hideDeleteModal, ConfirmModalComponent: DeleteModalComponent } = useConfirmModal()
-    const { data: articles, isPreviousData, totalPage, computedIndex } = usePagination('Articles', getPaginatedArticles, page)
 
-    const { mutate: removeArticle } = useDeleteItem(async () => {
+
+    const { mutate: removeArticle, isLoading: isArticleRemoveLoading } = useDeleteItem(async () => {
         const deleteResponse = await deleteArticle(articleId)
-        hideDeleteModal()
-        switch (deleteResponse.status) {
-            case 200:
-                showToast('success', deleteResponse.message)
-                return deleteResponse;
-            default:
-                showToast('error', deleteResponse.message)
-                return Promise.reject(deleteResponse.message)
+        return deleteResponse
+    }, ["Articles", page], articleId, page, setPage, totalPage, articlesLimitPerPage,
+        (success) => {
+            showToast('success', success.message)
+            hideDeleteModal()
         }
-    }, ["Articles", page], articleId)
+        ,
+        (error) => {
+            showToast('error', error)
+            hideDeleteModal()
+        })
 
+    if (isLoading) {
+        return <SkeletonTable />
+    }
+    if (isError) {
+        return <Alert message={error} />
+    }
     return (
         <>
             <BreadCrump />
@@ -40,36 +50,39 @@ export default function ManageArticles() {
                 {
                     articles?.length > 0 ? (
                         <>
-                            <SectionHeader title='articles Table' />
-                            <Table>
+                            <Table isLoading={isPreviousData}>
                                 <thead>
                                     <tr>
-                                        <th>id</th>
-                                        <th>article cover</th>
-                                        <th>article title</th>
-                                        <th>author</th>
-                                        <th>published date</th>
+                                        <th scope="col">id</th>
+                                        <th scope="col">article cover</th>
+                                        <th scope="col">article title</th>
+                                        <th scope="col">author</th>
+                                        <th scope="col">published date</th>
                                         <th>delete</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {articles?.map((article, index) => {
                                         return <tr key={article.id}>
-                                            <td>{computedIndex + index}</td>
-                                            <td>
+                                            <td data-label='id'>
+                                                {computedIndex + index}
+                                            </td>
+                                            <td data-label='cover'>
                                                 <img src={article.articleCover} />
                                             </td>
-                                            <td>
+                                            <td data-label='title'>
                                                 {article.articleTitle}
                                             </td>
-                                            <td>
+                                            <td data-label='author'>
                                                 {article.author}
                                             </td>
-                                            <td>{article.publishedDate}</td>
-                                            <td><Button title='delete' mode='error' onclick={() => {
-                                                showDeleteModal()
-                                                setArticleId(article.id)
-                                            }} /></td>
+                                            <td data-label='date'>{article.publishedDate}</td>
+                                            <td className='table-button' >
+                                                <Button title='delete' mode='error' onclick={() => {
+                                                    showDeleteModal()
+                                                    setArticleId(article.id)
+                                                }} />
+                                            </td>
                                         </tr>
                                     })}
                                 </tbody>
@@ -87,7 +100,7 @@ export default function ManageArticles() {
             </div>
 
             {ToastComponent()}
-            {DeleteModalComponent('delete', removeArticle)}
+            {DeleteModalComponent('delete', removeArticle, isArticleRemoveLoading)}
         </>
     )
 }

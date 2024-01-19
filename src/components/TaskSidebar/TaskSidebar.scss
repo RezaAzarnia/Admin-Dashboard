@@ -1,31 +1,28 @@
 .task-sidebar {
-  position: fixed;
-  top: 65px;
-  right: -280px;
-  width: 275px;
-  height: 91vh;
+  @include fix-position($top: 65px, $right: -280px);
+  @include size(275px, 91vh);
+  @include box-shadow(0, 0, 3px, 1px, var(--dark-gray));
   background-color: var(--white);
   padding: 10px 0;
   z-index: 999;
-  transition: all 0.5s ease-in-out;
   overflow: auto;
-  box-shadow: 0px 0px 3px 1px var(--dark-gray);
+  transition: all 0.5s ease-in-out;
   .task-sidebar-menu {
     border-bottom: 1px solid var(--light-gray);
   }
 }
 .task-sidebar-menu-list {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
+  @include flex($justify: space-around, $align: center);
   .task-sidebar-menu-list-item {
-    text-transform: capitalize;
-    font-size: 0.8rem;
-    color: var(--gray);
-    cursor: pointer;
+    @include text-format(
+      $font-size: 0.8rem,
+      $color: var(--gray),
+      $transform: capitalize
+    );
     padding: 8px;
     width: 50%;
     text-align: center;
+    cursor: pointer;
   }
   .task-sidebar-menu-list-item.active {
     color: var(--black);
@@ -37,9 +34,7 @@
 .task-sidebar-body .taskSidebar-header {
   border-bottom: 1px solid var(--light-gray);
   .row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    @include flex($justify: space-between, $align: center);
     padding: 15px 8px;
     h4.task-header-title {
       text-transform: capitalize;
@@ -50,35 +45,30 @@
   }
 }
 .chat-list-item {
-  display: flex;
-  align-items: center;
+  @include flex($justify: center, $align: center);
   gap: 10px;
   width: 100%;
-  justify-content: center;
-  border-bottom: 1px solid #b5b5b5;
+  border-bottom: 1px solid var(--light-gray);
   padding: 10px 0;
   &:last-child {
     border-bottom: none;
   }
   img {
-    width: 40px;
-    height: 40px;
+    @include size(40px);
     border-radius: 50%;
   }
 }
 .chat-info {
   width: 75%;
   .user-name {
-    text-transform: capitalize;
-    font-size: 0.9rem;
+    @include text-format($font-size: 0.9rem, $transform: capitalize);
     margin-bottom: 5px;
   }
   .chat-text {
-    color: var(--gray);
-    font-size: 0.75rem;
+    @include text-format($font-size: 0.75rem, $color: var(--gray));
     display: inline-block;
-    width: 100%;
     white-space: nowrap;
+    width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     padding: 3px 0;
@@ -89,11 +79,10 @@
     width: 100%;
     border-bottom: 1px solid var(--light-gray);
     .todo {
+      @include text-format($font-size: 0.8rem, $transform: capitalize);
       display: block;
       width: 95%;
       padding: 13px 7px 8px;
-      font-size: 0.8rem;
-      text-transform: capitalize;
       text-align: justify;
       user-select: none;
       label {
@@ -104,21 +93,18 @@
         color: var(--dark-gray);
       }
       input {
-        margin-right: 5px + 3;
+        margin-right: 8px;
       }
     }
   }
 }
 .todo-info {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  @include flex($justify: space-between, $align: center);
   margin-right: 5px;
   .todo-created-time {
+    @include text-format($font-size: 0.8rem, $color: var(--gray));
     display: block;
     margin-top: 5px;
-    color: var(--gray);
-    font-size: 0.8rem;
   }
   .trash-icon {
     color: var(--danger);
@@ -126,17 +112,15 @@
   }
 }
 .taskSidebar-header {
-  position: relative;
+  @include relative-position;
   form {
-    position: relative;
-    display: none;
+    @include relative-position;
     width: 97%;
+    display: none;
     margin: 0 auto;
     user-select: none;
     .add-todo-btn {
-      position: absolute;
-      top: 9px;
-      right: 3px;
+      @include absolute-position($top: 9px, $right: 3px);
     }
   }
 }
@@ -145,8 +129,16 @@ form.active {
 }
 form .todo-error-message {
   display: block;
-  color: var(--danger);
-  font-size: 0.8rem;
-  text-transform: capitalize;
+  @include text-format(
+    $font-size: 0.8rem,
+    $color: var(--danger),
+    $transform: capitalize
+  );
   margin-bottom: 5px;
+}
+
+@include breakpoint("small-to-medium-screen") {
+  .task-sidebar {
+    top: 120px;
+  }
 }

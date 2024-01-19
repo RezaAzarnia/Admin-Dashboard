@@ -1,42 +1,31 @@
 .upload-btn {
-  position: relative;
+  @include relative-position;
+  @include size(60%, 2.5rem);
   background-color: var(--purple);
   color: var(--white);
   text-align: center;
   overflow: hidden;
   top: -3px;
-  width: 60%;
-  height: 2.5rem;
+
   label {
-    display: flex;
+    @include flex($justify: center, $align: center);
+    @include text-format($font-size: 0.875rem, $transform: capitalize);
     height: 100%;
-    text-transform: capitalize;
-    font-size: 0.875rem;
     transition: all 0.3s ease;
-    justify-content: center;
-    align-items: center;
   }
   input[type="file"] {
+    @include absolute-position($top: 0, $left: 0, $right: 0);
+    @include size(100%, 2.5rem);
     color: transparent;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
     opacity: 0;
-    width: 100%;
-    height: 2.5rem;
     cursor: pointer;
   }
 }
 .up-icon {
-  color: var(--white);
-  position: absolute;
-  left: 0;
-  top: -26px;
-  right: 0;
+  @include absolute-position($top: -26px, $left: 0, $right: 0);
+  @include text-format($font-size: 1.2rem, $color: var(--white));
   width: 100%;
   transition: all 0.3s;
-  font-size: 1.2rem;
 }
 
 .upload-btn:hover {

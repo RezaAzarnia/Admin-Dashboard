@@ -6,15 +6,16 @@ import BreadCrump from '../../Components/BreadCrump/BreadCrump';
 import RateShow from '../../Components/RateShow/RateShow';
 import useFetchSingleItem from '../../hooks/useFetchSingleItem';
 import { getSingleProduct } from '../../services/Axios/Requests/products'
+import Alert from '../../Components/Alert/Alert';
 import './ProductDetail.scss'
 
 export default function ProductDetail() {
     const { id } = useParams('id');
-    const { data: productInfo } = useFetchSingleItem('Products', id, getSingleProduct)
+    const { data: productInfo, isError, error } = useFetchSingleItem('Products', id, getSingleProduct)
 
     const [activeTabpane, setActiveTabpane] = useState('Description');
     const [productComments, setProductComments] = useState([])
-    
+
     useEffect(() => {
         const acceptedComments = comments ? comments.filter(comment => comment.isAccept === 1) : []
         setProductComments(acceptedComments)
@@ -29,6 +30,9 @@ export default function ProductDetail() {
         productPrice,
         comments,
     } = productInfo || {};
+    if (isError) {
+        return <Alert message={error} />
+    }
 
     return (
         <>
@@ -49,10 +53,10 @@ export default function ProductDetail() {
                                     <div className='price-row'>
                                         <div className="price-with-discount">
                                             <h2 className="product-detail-main-price">
-                                                ${(productPrice - (productPrice / 100) * productDiscount)}
+                                                ${(productPrice - (productPrice / 100) * productDiscount).toFixed(2)}
                                             </h2>
                                             <p className="discount-price">
-                                                {productPrice}
+                                                ${productPrice}
                                             </p>
                                         </div>
                                         <div className="price-discount-value">
@@ -78,13 +82,13 @@ export default function ProductDetail() {
             <div className="product-detail-tabPane">
                 <ul className="tabpane-header">
                     <li
-                        className={`tabpane-list-item ${activeTabpane === 'Description' ? 'active' : ''}`}
+                        className={`tabpane-list-item ${activeTabpane === 'Description' && 'active'}`}
                         onClick={() => { setActiveTabpane('Description') }}
                     >
                         description
                     </li>
                     <li
-                        className={`tabpane-list-item ${activeTabpane === 'Comments' ? 'active' : ''}`}
+                        className={`tabpane-list-item ${activeTabpane === 'Comments' && 'active'}`}
                         onClick={() => { setActiveTabpane('Comments') }}
                     >
                         comments
@@ -109,7 +113,7 @@ export default function ProductDetail() {
                                             comment.anwser &&
                                             <div className="answer">
                                                 <div className="comment-header">
-                                                    <p className="answer-username ">reza azarnia</p>
+                                                    <p className="answer-username">reza azarnia</p>
                                                     <p className="date">{comment.anwserDate}</p>
                                                 </div>
                                                 <p className="answer-content">{comment.anwser}</p>

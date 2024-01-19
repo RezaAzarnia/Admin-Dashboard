@@ -2,7 +2,7 @@
   padding: 24px 14px;
   margin: 10px 0;
   background-color: #f8d7da; // Light red background color
-  color: #721c24; // Dark red text color
+  color: var(--dark-red); // Dark red text color
   border: 1px solid #f5c6cb; // Border color
   border-radius: 4px; // Rounded corners
   text-transform: capitalize;

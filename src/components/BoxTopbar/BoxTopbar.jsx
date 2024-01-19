@@ -4,7 +4,7 @@ export default function BoxTopbar({ title , children }) {
     return (
         <div className="box-topbar">
             <div className="title">
-                <h3>{title}</h3>
+                <h4>{title}</h4>
             </div>
             <div className="topbar-right-side">
                 {children}

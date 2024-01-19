@@ -1,8 +1,7 @@
 .rating {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    cursor: pointer;
+  @include flex($align: center);
+  margin-bottom: 10px;
+  cursor: pointer;
 
   /* Style for star icons */
   .star-filled {

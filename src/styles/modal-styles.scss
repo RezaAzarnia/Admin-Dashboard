@@ -1,36 +1,20 @@
 .modal-container .overlay.active {
-  position: fixed;
-  width: 100%;
-  height: 100%;
+  @include fix-position($top: 0, $left: 0);
+  @include size(100%);
   background-color: rgba(0, 0, 0, 0.4);
-  z-index: 9999;
-  top: 0;
-  right: 0;
+  z-index: 999;
   animation: fade 0.5s forwards;
 }
 
-@keyframes fade {
-  from {
-    opacity: 0;
-    visibility: hidden;
-  }
-  to {
-    opacity: 1;
-    visibility: visible;
-  }
-}
 .modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  @include fixed-center;
+  @include flex($direction: column);
+  width: 97%;
+  max-width: 400px;
   background: var(--white);
-  z-index: 10000;
+  z-index: 1000;
   border-radius: 10px;
   text-align: center;
-  width: 400px;
-  display: flex;
-  flex-direction: column;
   line-height: 1.5;
   text-transform: capitalize;
   overflow: auto;
@@ -43,6 +27,16 @@
   animation: scaleIn 0.5s forwards;
 }
 
+@keyframes fade {
+  from {
+    opacity: 0;
+    visibility: hidden;
+  }
+  to {
+    opacity: 1;
+    visibility: visible;
+  }
+}
 @keyframes scaleIn {
   from {
     transform: translate(-50%, -50%) scale(0);
@@ -51,28 +45,9 @@
     transform: translate(-50%, -50%) scale(1);
   }
 }
-.loader {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  display: block;
-  margin:5px auto ;
-  position: relative;
-  color:var(--white);
-  animation: animloader 1s linear infinite alternate;
-}
 
-@keyframes animloader {
-  0% {
-    box-shadow: -38px -12px ,  -14px 0,  14px 0, 38px 0;
-  }
-  33% {
-    box-shadow: -38px 0px, -14px -12px,  14px 0, 38px 0;
-  }
-  66% {
-    box-shadow: -38px 0px , -14px 0, 14px -12px, 38px 0;
-  }
-  100% {
-    box-shadow: -38px 0 , -14px 0, 14px 0 , 38px -12px;
+@include breakpoint("small-screen") {
+  .modal {
+    width: 98%;
   }
 }

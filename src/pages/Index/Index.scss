@@ -1,39 +1,31 @@
 .detail-box-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  @include grid-container($columns: 4, $gap: 14px);
   grid-template-rows: 100px;
   justify-items: center;
-  gap: 14px;
 }
 .Analytics-part {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  @include grid-container($columns: 4, $gap: 15px);
   grid-template-rows: repeat(2, 230px);
   margin: 25px 0;
-  gap: 15px;
 }
 
-.down-part-container {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
+.social-campaign-container {
+  @include grid-container($columns: 6, $gap: 10px);
   grid-template-rows: max-content;
-  gap: 10px;
   .table {
     grid-column: 1 / span 4;
     background: var(--white);
-    padding: 15px;
+
+    td.campaign-client {
+      color: var(--dark-gray);
+    }
   }
 }
-
 .table.full-width {
+  @include fix-position($top: 0, $left: 0, $right: 0, $bottom: 0);
   transform: scaleX(0);
   transform-origin: top left;
   transform-box: fill-box;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   z-index: 99999;
   animation: slideIn 0.4s ease forwards;
 }
@@ -43,19 +35,40 @@
     opacity: 1;
   }
 }
-td.campaign-name{
-  text-transform: capitalize;
-  font-size: 0.875rem;
+
+@include breakpoint("small-screen") {
+  .detail-box-row {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, 75px);
+  }
+  .Analytics-part {
+    grid-template-columns: 1fr;
+    grid-template-rows: max-content;
+  }
+  .social-campaign-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(2, 1fr);
+    .table {
+      grid-column: auto;
+    }
+  }
 }
-td.campaign-client{
-  text-transform: capitalize;
-  color: var(--dark-gray);
+@include breakpoint("medium-screen") {
+  .social-campaign-container {
+    grid-template-rows: repeat(2, 1fr);
+    .table {
+      grid-column: 1 / span 6;
+    }
+  }
 }
-td.campaign-changes{
-  text-transform: capitalize;
-  color: var(--green);
-}
-td.campaign-status{
-  width: 10px;
-  text-align: center;
+
+@include breakpoint("medium-to-large-screen") {
+  .detail-box-row {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 100px);
+  }
+  .Analytics-part {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 230px);
+  }
 }
