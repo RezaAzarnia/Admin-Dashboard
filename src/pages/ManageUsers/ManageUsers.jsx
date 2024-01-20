@@ -4,7 +4,7 @@ import { Formik, Form } from 'formik'
 import { FaEyeSlash, FaEye } from "react-icons/fa";
 import BreadCrump from '../../Components/BreadCrump/BreadCrump'
 import SectionHeader from '../../Components/SectionHeader/SectionHeader'
-import Input from '../../components/Form/Input/Input'
+import Input from '../../Components/Form/Input/Input'
 import Table from '../../Components/Table/Table'
 import Button from '../../Components/Form/Button/Button'
 import EditModal from '../../Components/Modals/EditModal/EditModal'

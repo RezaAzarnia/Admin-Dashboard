@@ -1,6 +1,6 @@
 import React, { useTransition } from 'react';
 import { Link } from 'react-router-dom';
-import Loader from '../../components/Loader/Loader';
+import Loader from '../../Components/Loader/Loader';
 import './ErrorPage.scss';
 
 export default function ErrorPage() {

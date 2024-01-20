@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom';
 import Button from '../../Form/Button/Button';
 import './Modal.scss'

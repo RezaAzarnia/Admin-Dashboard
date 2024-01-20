@@ -1,13 +1,13 @@
 import React, { memo, useEffect, useRef, useState } from 'react'
-import { useSidebarContext } from '../../context/SidebarContext';
+import { useSidebarContext } from '../../Context/SidebarContext';
+import NotificationsBox from '../NotificationsBox/NotificationsBox';
+import ProfileSettingMenu from '../ProfileSettingMenu/ProfileSettingMenu';
+import IconMenu from '../IconMenu/IconMenu';
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoIosSearch } from "react-icons/io";
 import { IoSettingsSharp } from "react-icons/io5";
 import { BsFillGrid3X3GapFill, BsThreeDotsVertical } from "react-icons/bs";
 import { FaBell } from "react-icons/fa";
-import NotificationsBox from '../NotificationsBox/NotificationsBox';
-import ProfileSettingMenu from '../ProfileSettingMenu/ProfileSettingMenu';
-import IconMenu from '../IconMenu/IconMenu';
 import { Link } from 'react-router-dom';
 import './Navbar.scss'
 

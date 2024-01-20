@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Form, Formik } from 'formik';
 import { addArticle } from '../../services/Axios/Requests/articles';
-import Input from '../../components/Form/Input/Input';
+import Input from '../../Components/Form/Input/Input';
 import BreadCrump from '../../Components/BreadCrump/BreadCrump';
 import TextEditor from '../../Components/Form/TextEditor';
 import SectionHeader from '../../Components/SectionHeader/SectionHeader';

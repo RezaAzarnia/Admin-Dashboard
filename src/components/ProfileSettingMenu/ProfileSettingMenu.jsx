@@ -1,5 +1,4 @@
-import React, { forwardRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { forwardRef } from 'react'
 import './ProfileSettingMenu.scss'
 const ProfileSettingMenu = forwardRef((props, ref) => {
     const { isOpen } = props;

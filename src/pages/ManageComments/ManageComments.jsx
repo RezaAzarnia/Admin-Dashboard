@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { acceptCommentById, anwserComment, deleteComment, getComments, rejectCommentById } from '../../services/Axios/Requests/comments'
 import Button from '../../Components/Form/Button/Button'
-import Input from '../../components/Form/Input/Input';
+import Input from '../../Components/Form/Input/Input';
 import Table from '../../Components/Table/Table'
 import BreadCrump from '../../Components/BreadCrump/BreadCrump'
 import Modal from '../../Components/Modals/Modal/Modal'

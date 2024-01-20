@@ -1,9 +1,9 @@
 import { lazy, Suspense } from "react";
 
-const Loader = lazy(() => import('./components/Loader/Loader'))
+const Loader = lazy(() => import('./Components/Loader/Loader'))
+const Layout = lazy(() => import('./Components/Layout/Layout'))
 const Index = lazy(() => import('./pages/Index/Index'))
 const ErrorPage = lazy(() => import('./pages/ErrorPage/ErrorPage'))
-const Layout = lazy(() => import('./components/Layout/Layout'))
 const AddProduct = lazy(() => import('./pages/AddProduct/AddProduct'))
 const AddArticle = lazy(() => import('./pages/AddArticle/AddArticle'))
 const ManageUsers = lazy(() => import('./pages/ManageUsers/ManageUsers'))

@@ -13,8 +13,7 @@
   .logo-container {
     width: 100%;
     .logo-icon {
-      width: 30px;
-      height: 22px;
+      @include size(24px , 18px);
       display: inline-block;
       vertical-align: middle;
     }

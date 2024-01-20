@@ -4,7 +4,7 @@ import Table from '../../Components/Table/Table'
 import BreadCrump from '../../Components/BreadCrump/BreadCrump'
 import EditModal from '../../Components/Modals/EditModal/EditModal'
 import useToast from '../../hooks/useToast'
-import Input from '../../components/Form/Input/Input';
+import Input from '../../Components/Form/Input/Input';
 import Button from '../../Components/Form/Button/Button'
 import UploadButton from '../../Components/Form/UploadButton/UploadButton'
 import useConfirmModal from '../../hooks/useConfirmModal';

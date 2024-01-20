@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FaMountainSun } from 'react-icons/fa6';
 import { MdShoppingBasket, MdAssignment, MdPerson, MdList, MdSettings } from 'react-icons/md';
-import { useSidebarContext } from '../../context/SidebarContext';
+import { useSidebarContext } from '../../Context/SidebarContext';
 import { HiDotsHorizontal } from 'react-icons/hi';
 import { BiCommentDetail } from "react-icons/bi";
 import { NavLink } from 'react-router-dom';

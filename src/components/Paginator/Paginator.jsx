@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React  from 'react'
 import './Paginator.scss'
 export default function Paginator({ page, totalPage, setPage, isPreviousData }) {
     return totalPage > 1 &&

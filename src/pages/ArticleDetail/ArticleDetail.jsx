@@ -6,8 +6,8 @@ import { useParams } from 'react-router-dom'
 import { FaRegCalendarAlt, FaUser } from "react-icons/fa";
 import useFetchSingleItem from '../../hooks/useFetchSingleItem'
 import { getSingleArticle } from '../../services/Axios/Requests/articles'
-import './ArticleDetail.scss'
 import Alert from '../../Components/Alert/Alert'
+import './ArticleDetail.scss'
 export default function ArticleDetail() {
     const { id } = useParams('id');
     const { data: article, isError, error } = useFetchSingleItem("Articles", id, getSingleArticle)

@@ -3,7 +3,7 @@ import { Form, Formik } from 'formik';
 import { addProduct } from '../../services/Axios/Requests/products';
 import { categoryService } from '../../services/Axios/Requests/category';
 import BreadCrump from '../../Components/BreadCrump/BreadCrump'
-import Input from '../../components/Form/Input/Input'
+import Input from '../../Components/Form/Input/Input'
 import UploadButton from '../../Components/Form/UploadButton/UploadButton'
 import Button from '../../Components/Form/Button/Button';
 import SectionHeader from '../../Components/SectionHeader/SectionHeader';
