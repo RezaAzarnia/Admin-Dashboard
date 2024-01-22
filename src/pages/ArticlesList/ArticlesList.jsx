@@ -26,10 +26,11 @@ export default function ArticlesList() {
     )
   }
   if (isLoading) {
+    console.log('loading')
     return (
       <div className='articles-container'>
         <div className="articles-row">
-          {Array.from({ length: 6 }, (_, i) => <ArticleSkeletonLoader key={i + 1} />)}
+          {Array.from({ length: 4 }, (_, i) => <ArticleSkeletonLoader key={i + 1} />)}
         </div>
       </div>
     )

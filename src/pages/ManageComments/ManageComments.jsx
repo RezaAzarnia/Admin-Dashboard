@@ -105,7 +105,7 @@ export default function ManageComments() {
             <div className="comments-container">
                 {
                     comments?.length > 0 ?
-                        <Table>
+                        <Table isLoading={isPreviousData}>
                             <thead>
                                 <tr>
                                     <th>id</th>

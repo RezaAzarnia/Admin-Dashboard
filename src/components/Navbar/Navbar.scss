@@ -13,7 +13,8 @@
   .logo-container {
     width: 100%;
     .logo-icon {
-      @include size(24px , 18px);
+      height: 18px;
+      margin-right: 4px;
       display: inline-block;
       vertical-align: middle;
     }
@@ -51,7 +52,7 @@
 }
 .navbar-right-side {
   @include fix-position($right: 18px);
-  @include flex($align: center, $justify: end);
+  @include flex($align: center, $justify: flex-end);
   padding: 10px 0;
   z-index: 10;
   width: 50%;

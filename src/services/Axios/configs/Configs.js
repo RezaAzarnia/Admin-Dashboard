@@ -1,5 +1,5 @@
 import axios from "axios";
-const API_URL = " http://localhost:3000";
+const API_URL = "https://azarniabackendservice.liara.run";
 const baseURL = axios.create({
   baseURL: API_URL,
   headers: {
@@ -56,10 +56,4 @@ const initialDate = () => {
 const initialTime = () => {
   return date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
 };
-export {
-  baseURL,
-  handleResponse,
-  sanitizeData,
-  initialDate,
-  initialTime,
-};
+export { baseURL, handleResponse, sanitizeData, initialDate, initialTime };

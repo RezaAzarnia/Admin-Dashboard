@@ -60,7 +60,7 @@ export default function ProductDetail() {
                                             </p>
                                         </div>
                                         <div className="price-discount-value">
-                                            <div className="badge">{productDiscount}%</div>
+                                            <div className="badge bg-danger">{productDiscount}%</div>
                                         </div>
                                     </div>
                                 </>

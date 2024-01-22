@@ -28,7 +28,7 @@ export default function Index() {
     const [products, users, articles, orders, sociaCampaignsInfo] = useQueries([
         { queryKey: 'ProductsLength', queryFn: () => getProducts() },
         { queryKey: 'UsersLength', queryFn: () => getUsers() },
-        { queryKey: 'Articles', queryFn: () => getArticles() },
+        { queryKey: 'ArticlesLength', queryFn: () => getArticles() },
         { queryKey: 'OrdersLength', queryFn: () => getOrders() },
         { queryKey: 'SociaCampaigns', queryFn: () => getSociaCampaignsInfo() },
     ])

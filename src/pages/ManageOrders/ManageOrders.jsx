@@ -49,7 +49,7 @@ export default function ManageOrders() {
             <div className="orders-container">
                 {
                     orders?.length > 0 ?
-                        <Table>
+                        <Table isLoading={isPreviousData}>
                             <thead>
                                 <tr>
                                     <th>count</th>

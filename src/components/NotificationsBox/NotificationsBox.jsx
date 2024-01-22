@@ -7,15 +7,10 @@ import useItemMutation from '../../hooks/useItemMutation';
 import './NotificationsBox.scss';
 
 const NotificationsBox = forwardRef((props, ref) => {
-    const { data: notifs, isError, error } = useFetchItem('Notification', getNotfications);
+    const { data: notifs} = useFetchItem('Notification', getNotfications);
     const { isOpen, setNotificationsLength } = props;
     const [initialLoad, setInitialLoad] = useState(true)
     const [notifId, setNotifId] = useState(0)
-
-
-    // if (isError) {
-    //     console.log(error)
-    // }
 
     useEffect(() => {
         setNotificationsLength(notifs?.length)

@@ -20,7 +20,6 @@ function TaskSidebar() {
     const [todosError, setTodosError] = useState({})
     const [checkedTodo, setCheckedTodo] = useState([])
     const [todoId, setTodoId] = useState(0)
-    const [initialLoad, setInitialLoad] = useState(true)
     //handle click out side and close task side bar
     const handleClickOutside = (event) => {
         if (isOpenTaskSidebar && !event.target.closest('.task-sidebar') && !event.target.closest('.settings-icon')) {
@@ -34,14 +33,13 @@ function TaskSidebar() {
         };
     }, [isOpenTaskSidebar]);
 
-    const { mutate: addTodo } = useItemMutation(async (values) => {
+    const { mutate: addTodo ,isLoading} = useItemMutation(async (values) => {
         if (!values.todo) {
             setTodosError({ todo: "please enter the todo" })
+            return Promise.reject(todosError.todo)
         } else if (values.todo.length > 50) {
             setTodosError({ todo: 'todo should be less than 50 characters!' })
-        }
-        if (todosError.length > 0) {
-            return Promise.reject(todosError[0])
+            return Promise.reject(todosError.todo)
         }
         return await createTodo(values.todo)
     }, 'Todos')
@@ -57,18 +55,12 @@ function TaskSidebar() {
         }
     })
 
-    //remove item by change todoId
     useEffect(() => {
-        if (todoId !== 0 && !initialLoad) {
+        if (todoId !== 0) {
             removeTodo(todoId)
             setTodoId(0)
         }
     }, [todoId])
-    useEffect(() => {
-        if (initialLoad) {
-            setInitialLoad(false)
-        }
-    }, [initialLoad])
 
     const { mutate: handleIsDoneTodo } = useItemMutation(async (updatedTodo) => {
         return await changeTodoStatus(updatedTodo.id, updatedTodo.isDone);
@@ -121,20 +113,18 @@ function TaskSidebar() {
                                 <div className="taskSidebar-header">
                                     <div className="row">
                                         <HiDotsHorizontal />
-                                        <h4>todo</h4>
+                                        <h4>Todo</h4>
                                         {!isShowAddTodo ? <FaPlus onClick={() => setIsShowAddTodo(true)} /> : <FaMinus onClick={() => setIsShowAddTodo(false)} />}
                                     </div>
 
                                     <Formik initialValues={{ todo: "" }} onSubmit={(values, { resetForm }) => {
-                                        addTodo(values, { onSuccess: () => { resetForm() } })
+                                        addTodo(values, { onSuccess: () => { resetForm(); setTodosError({}) } })
                                     }}>
                                         <Form className={isShowAddTodo ? 'active' : ''}>
                                             <Input type="text" name='todo' placeholder='todo name...' />
-                                            {todosError.todo &&
-                                                <span className='todo-error-message'>{todosError.todo}</span>
-                                            }
+                                            {todosError.todo && <span className='todo-error-message'>{todosError.todo}</span>}
                                             <div className="add-todo-btn">
-                                                <Button title='add' type='submit' mode='success' />
+                                                <Button title='add' type='submit' mode='success' isLoading={isLoading}/>
                                             </div>
                                         </Form>
                                     </Formik>

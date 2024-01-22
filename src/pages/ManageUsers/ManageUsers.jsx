@@ -108,6 +108,7 @@ export default function ManageUsers() {
     return deleteUserResponse;
   }, ['Users', page], userId, page, setPage, totalPage, usersLimitPerPage,
     (success) => {
+      console.log(success)
       showToast('success', success.message)
       hideDeleteModal()
     }
@@ -157,7 +158,7 @@ export default function ManageUsers() {
             users?.length > 0 ?
               <div className="users-table">
                 <SectionHeader title='users' />
-                <Table>
+                <Table isLoading={isPreviousData}>
                   <thead>
                     <tr>
                       <th>index</th>
